@@ -1,0 +1,50 @@
+:host {
+  display: block;
+  position: relative;
+  outline: none;
+}
+
+.select-trigger {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--background-color);
+  border: none;
+  border-bottom: 2px solid rgba(var(--text-rgb), 0.2);
+  color: var(--text-color);
+  font-family: inherit;
+  font-size: 0.875em;
+  line-height: 1.5;
+  padding: 0.375em 0.5em;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+  user-select: none;
+}
+
+.select-trigger.placeholder {
+  color: var(--text-secondary-color);
+}
+
+:host(:focus) .select-trigger {
+  border-bottom: 3px solid var(--theme-color);
+  padding-bottom: calc(0.375em - 1px);
+}
+
+.dropdown {
+  display: none;
+  position: absolute;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0;
+  background: var(--panel-color);
+  z-index: 100;
+}
+
+.dropdown.open {
+  display: block;
+}
+
+:host([disabled]) .select-trigger {
+  opacity: 0.5;
+  pointer-events: none;
+}

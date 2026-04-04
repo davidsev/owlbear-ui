@@ -1,0 +1,31 @@
+:host {
+  display: flex;
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-bottom: 2px solid rgba(var(--text-rgb), 0.15);
+}
+
+/* Extend bottom border to full width */
+:host::after {
+  content: "";
+  flex: 1 1 auto;
+}
+
+/* Styled scrollbar */
+:host::-webkit-scrollbar {
+  height: 4px;
+}
+
+:host::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+:host::-webkit-scrollbar-thumb {
+  background: rgba(var(--text-rgb), 0.2);
+  border-radius: 2px;
+}
+
+:host::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--text-rgb), 0.35);
+}

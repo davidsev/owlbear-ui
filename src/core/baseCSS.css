@@ -1,0 +1,12 @@
+:host {
+  --text-color: rgb(var(--text-rgb));
+  --text-secondary-color: rgba(var(--text-rgb), 0.7);
+  --theme-color: rgb(var(--theme-rgb));
+  --background-color: rgb(var(--background-rgb));
+  --panel-color: rgb(var(--panel-rgb));
+
+  display: block;
+  color: var(--text-color);
+  font-family: sans-serif;
+  line-height: 1.5;
+}

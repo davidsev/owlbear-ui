@@ -1,0 +1,47 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+}
+
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 2.5em;
+  height: 1.5em;
+  padding: 0.125em;
+  border: none;
+  border-radius: 0.75em;
+  background: rgba(var(--text-rgb), 0.25);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--theme-color);
+  outline-offset: 2px;
+}
+
+.thumb {
+  display: block;
+  width: 1.25em;
+  height: 1.25em;
+  border-radius: 50%;
+  background: rgba(var(--text-rgb), 0.7);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+:host([checked]) button {
+  background: rgba(var(--theme-rgb), 0.45);
+}
+
+:host([checked]) .thumb {
+  transform: translateX(1em);
+  background: var(--theme-color);
+}
+
+:host([disabled]) button {
+  opacity: 0.5;
+  pointer-events: none;
+}

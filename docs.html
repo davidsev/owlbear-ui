@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>owlbear-ui Documentation</title>
+    <script type="importmap">
+    {
+        "imports": {
+            "lit": "https://esm.sh/lit@3",
+            "lit/": "https://esm.sh/lit@3/",
+            "tslib": "https://esm.sh/tslib@2",
+            "vanilla-colorful/": "https://esm.sh/vanilla-colorful@0.7/"
+        }
+    }
+    </script>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: rgb(var(--panel-rgb));
+            background-image: linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12));
+            color: rgb(var(--text-rgb));
+            transition: background 0.2s, color 0.2s;
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1 { margin-top: 0; }
+
+        h2 {
+            margin-top: 3rem;
+            margin-bottom: 0.5rem;
+            border-bottom: 2px solid rgba(var(--text-rgb), 0.15);
+            padding-bottom: 0.25rem;
+        }
+
+        h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        p { line-height: 1.6; }
+
+        a { color: rgb(var(--theme-rgb)); }
+
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            border: 2px solid rgba(var(--text-rgb), 0.3);
+            border-radius: 0.5rem;
+            background: rgb(var(--panel-rgb));
+            color: rgb(var(--text-rgb));
+            cursor: pointer;
+            font-size: 0.875rem;
+            z-index: 1000;
+        }
+        .theme-toggle:hover {
+            border-color: rgba(var(--text-rgb), 0.6);
+        }
+
+        /* --- TOC --- */
+        nav.toc {
+            margin: 1.5rem 0;
+            padding: 1rem 1.25rem;
+            background: rgba(var(--text-rgb), 0.03);
+            border: 1px solid rgba(var(--text-rgb), 0.1);
+            border-radius: 0.5rem;
+        }
+        nav.toc h2 {
+            margin: 0 0 0.5rem 0;
+            border: none;
+            font-size: 1rem;
+        }
+        nav.toc ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            columns: 2;
+            column-gap: 2rem;
+        }
+        nav.toc li {
+            padding: 0.15rem 0;
+            break-inside: avoid;
+        }
+        nav.toc a {
+            text-decoration: none;
+        }
+        nav.toc a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- Demo blocks --- */
+        .demo {
+            padding: 1rem;
+            margin: 0.75rem 0;
+            background: rgba(var(--text-rgb), 0.03);
+            border: 1px solid rgba(var(--text-rgb), 0.1);
+            border-radius: 0.5rem;
+        }
+
+        .demo-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        /* --- Code blocks --- */
+        pre {
+            background: rgba(var(--text-rgb), 0.07);
+            border: 1px solid rgba(var(--text-rgb), 0.1);
+            border-radius: 0.375rem;
+            padding: 0.75rem 1rem;
+            overflow-x: auto;
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            margin: 0.5rem 0;
+        }
+
+        pre[class*="language-"] {
+            background: rgba(var(--text-rgb), 0.07);
+        }
+
+        code {
+            font-size: 0.8125em;
+            background: rgba(var(--text-rgb), 0.07);
+            padding: 0.1em 0.3em;
+            border-radius: 3px;
+        }
+
+        pre code,
+        code[class*="language-"] {
+            background: none;
+            padding: 0;
+        }
+
+        /* --- Prism token colors (dark) --- */
+        :root[data-theme="dark"] {
+            --code-tag: #7ec8e3;
+            --code-attr-name: #c792ea;
+            --code-attr-value: #c3e88d;
+            --code-string: #c3e88d;
+            --code-keyword: #c792ea;
+            --code-comment: rgba(255, 255, 255, 0.4);
+            --code-function: #82aaff;
+            --code-punct: rgba(255, 255, 255, 0.55);
+            --code-number: #f78c6c;
+            --code-operator: #89ddff;
+            --code-class: #ffcb6b;
+            --code-property: #f07178;
+        }
+
+        /* --- Prism token colors (light) --- */
+        :root[data-theme="light"] {
+            --code-tag: #1a6fa0;
+            --code-attr-name: #7c3aed;
+            --code-attr-value: #16a34a;
+            --code-string: #16a34a;
+            --code-keyword: #7c3aed;
+            --code-comment: rgba(0, 0, 0, 0.4);
+            --code-function: #2563eb;
+            --code-punct: rgba(0, 0, 0, 0.55);
+            --code-number: #c2410c;
+            --code-operator: #0e7490;
+            --code-class: #b45309;
+            --code-property: #be185d;
+        }
+
+        .token.tag,
+        .token.selector { color: var(--code-tag); }
+        .token.attr-name { color: var(--code-attr-name); }
+        .token.attr-value,
+        .token.string { color: var(--code-attr-value); }
+        .token.keyword,
+        .token.rule { color: var(--code-keyword); }
+        .token.comment,
+        .token.prolog { color: var(--code-comment); font-style: italic; }
+        .token.function { color: var(--code-function); }
+        .token.punctuation { color: var(--code-punct); }
+        .token.number,
+        .token.boolean { color: var(--code-number); }
+        .token.operator { color: var(--code-operator); }
+        .token.class-name { color: var(--code-class); }
+        .token.property { color: var(--code-property); }
+        .token.script { color: inherit; }
+
+        /* --- Tables --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+            margin: 0.5rem 0;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 0.375rem 0.75rem;
+            border-bottom: 1px solid rgba(var(--text-rgb), 0.1);
+        }
+
+        th {
+            font-weight: 600;
+            color: rgba(var(--text-rgb), 0.7);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .tab-content {
+            padding: 1rem;
+            border: 1px solid rgba(var(--text-rgb), 0.1);
+            border-top: none;
+        }
+    </style>
+</head>
+<body>
+
+<button class="theme-toggle" id="theme-toggle">Toggle Theme (Dark)</button>
+
+<h1>owlbear-ui Documentation</h1>
+<p>A Lit web component library for Owlbear Rodeo extensions. All components use the <code>obui-</code> prefix and follow OBR's visual style.</p>
+
+<!-- ===== TOC ===== -->
+<nav class="toc">
+    <h2>Contents</h2>
+    <ul>
+        <li><a href="#installation">Installation</a></li>
+        <li><a href="#theme-manager">ThemeManager</a></li>
+        <li><a href="#base-element">BaseElement</a></li>
+        <li><a href="#button">obui-button</a></li>
+        <li><a href="#input">obui-input</a></li>
+        <li><a href="#select">obui-select</a></li>
+        <li><a href="#multi-select">obui-multi-select</a></li>
+        <li><a href="#tabs">obui-tab-bar + obui-tab-button</a></li>
+        <li><a href="#help-tooltip">obui-help-tooltip</a></li>
+        <li><a href="#toggle">obui-toggle</a></li>
+        <li><a href="#color-picker">obui-color-picker</a></li>
+    </ul>
+</nav>
+
+<!-- ================================================================ -->
+<h2 id="installation">Installation</h2>
+
+<pre><code class="language-bash">npm install @davidsev/owlbear-ui</code></pre>
+
+<p>Then import in your code:</p>
+<pre><code class="language-javascript">// Import everything:
+import '@davidsev/owlbear-ui';
+
+// Color picker is a separate import (vanilla-colorful is optional):
+import '@davidsev/owlbear-ui/color-picker';
+
+// Or import individual components to reduce bundle size:
+import '@davidsev/owlbear-ui/components/Button';
+import '@davidsev/owlbear-ui/components/Select';
+import '@davidsev/owlbear-ui/core/ThemeManager';</code></pre>
+
+<!-- ================================================================ -->
+<h2 id="theme-manager">ThemeManager</h2>
+
+<p>The <code>ThemeManager</code> singleton injects a global stylesheet with CSS custom properties and sets <code>data-theme</code> on <code>&lt;html&gt;</code>. It is lazily instantiated on the first <code>getInstance()</code> call and defaults to dark mode.</p>
+
+<h3>Usage</h3>
+<pre><code class="language-javascript">import { ThemeManager } from '@davidsev/owlbear-ui';
+
+const tm = ThemeManager.getInstance();
+
+// In an OBR extension — sync with OBR's theme:
+tm.connectOBR();
+
+// Manual control:
+tm.setTheme('light');
+tm.setTheme('dark');
+
+// Read current state:
+console.log(tm.darkMode); // boolean
+
+// Listen for changes:
+tm.addEventListener('change', () => {
+    console.log('Theme is now', tm.darkMode ? 'dark' : 'light');
+});</code></pre>
+
+<h3>API</h3>
+<table>
+    <tr><th>Member</th><th>Type</th><th>Description</th></tr>
+    <tr><td><code>ThemeManager.getInstance()</code></td><td>static method</td><td>Returns the singleton instance.</td></tr>
+    <tr><td><code>.darkMode</code></td><td><code>boolean</code> (readonly)</td><td><code>true</code> if current theme is dark.</td></tr>
+    <tr><td><code>.setTheme(mode)</code></td><td>method</td><td>Manually set the theme. Accepts <code>'dark'</code> or <code>'light'</code>.</td></tr>
+    <tr><td><code>.connectOBR()</code></td><td>async method</td><td>Start syncing with OBR's theme. Dynamically imports <code>@owlbear-rodeo/sdk</code>.</td></tr>
+</table>
+
+<h3>Events</h3>
+<table>
+    <tr><th>Event</th><th>Detail</th><th>Description</th></tr>
+    <tr><td><code>change</code></td><td>none</td><td>Fired whenever the theme changes. Check <code>.darkMode</code> for the new state.</td></tr>
+</table>
+
+<h3>CSS Custom Properties</h3>
+<p>Injected on <code>:root</code> and available everywhere (including inside shadow DOM):</p>
+<table>
+    <tr><th>Property</th><th>Dark</th><th>Light</th></tr>
+    <tr><td><code>--text-rgb</code></td><td>255, 255, 255</td><td>0, 0, 0</td></tr>
+    <tr><td><code>--theme-rgb</code></td><td>187, 153, 255</td><td>187, 153, 255</td></tr>
+    <tr><td><code>--background-rgb</code></td><td>46, 49, 66</td><td>229, 231, 235</td></tr>
+    <tr><td><code>--panel-rgb</code></td><td>34, 39, 56</td><td>242, 243, 249</td></tr>
+</table>
+<p>Components also define convenience properties on <code>:host</code>: <code>--text-color</code>, <code>--text-secondary-color</code>, <code>--theme-color</code>, <code>--background-color</code>, <code>--panel-color</code>.</p>
+
+<!-- ================================================================ -->
+<h2 id="base-element">BaseElement</h2>
+
+<p>Base class for all owlbear-ui components and for your own custom components. Extends <code>LitElement</code>.</p>
+
+<pre><code class="language-javascript">import { html } from 'lit';
+import { customElement } from 'lit/decorators.js';
+import { BaseElement, baseCSS } from '@davidsev/owlbear-ui';
+
+@customElement('my-widget')
+class MyWidget extends BaseElement {
+    static override styles = baseCSS(`
+        :host { padding: 1rem; }
+        p { color: var(--theme-color); }
+    `);
+
+    override render() {
+        return html`&lt;p&gt;My themed widget&lt;/p&gt;`;
+    }
+}</code></pre>
+
+<h3>API</h3>
+<table>
+    <tr><th>Member</th><th>Description</th></tr>
+    <tr><td><code>eventCleanupSignal</code></td><td>Protected <code>AbortSignal</code> that aborts when the element is disconnected. Pass as <code>{ signal }</code> to <code>addEventListener</code> for automatic cleanup.</td></tr>
+</table>
+
+<!-- ================================================================ -->
+<h2 id="button">&lt;obui-button&gt;</h2>
+
+<p>A styled button with a hover underline effect. Content is placed in the default slot.</p>
+
+<div class="demo">
+    <div class="demo-row">
+        <obui-button id="doc-btn">Click Me</obui-button>
+        <obui-button disabled>Disabled</obui-button>
+        <obui-button id="doc-btn-icon">&#9733; Starred</obui-button>
+    </div>
+</div>
+
+<pre><code class="language-html">&lt;obui-button&gt;Click Me&lt;/obui-button&gt;
+&lt;obui-button disabled&gt;Disabled&lt;/obui-button&gt;
+&lt;obui-button&gt;&amp;#9733; Starred&lt;/obui-button&gt;</code></pre>
+
+<h3>Properties</h3>
+<table>
+    <tr><th>Property</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr>
+    <tr><td><code>disabled</code></td><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Reduces opacity and disables pointer events.</td></tr>
+    <tr><td><code>ariaLabel</code></td><td><code>aria-label</code></td><td><code>string | null</code></td><td><code>null</code></td><td>Accessible label passed through to the inner <code>&lt;button&gt;</code>. Use for icon-only buttons.</td></tr>
+</table>
+
+<h3>Slots</h3>
+<table>
+    <tr><th>Slot</th><th>Description</th></tr>
+    <tr><td>(default)</td><td>Button content (text, icons, etc.)</td></tr>
+</table>
+
+<h3>CSS Parts</h3>
+<table>
+    <tr><th>Part</th><th>Description</th></tr>
+    <tr><td><code>button</code></td><td>The inner <code>&lt;button&gt;</code> element.</td></tr>
+</table>
+
+<!-- ================================================================ -->
+<h2 id="input">&lt;obui-input&gt;</h2>
+
+<p>A styled text/number input with bottom-border focus indicator.</p>
+
+<div class="demo">
+    <div class="demo-grid">
+        <div>
+            <obui-input id="doc-input-text" placeholder="Text input..."></obui-input>
+        </div>
+        <div>
+            <obui-input id="doc-input-num" type="number" min="0" max="100" step="5" value="50"></obui-input>
+        </div>
+        <div>
+            <obui-input disabled value="Disabled"></obui-input>
+        </div>
+        <div>
+            <obui-input required placeholder="Required (empty = red border)"></obui-input>
+        </div>
+    </div>
+</div>
+
+<pre><code class="language-html">&lt;obui-input placeholder="Text input..."&gt;&lt;/obui-input&gt;
+&lt;obui-input type="number" min="0" max="100" step="5" value="50"&gt;&lt;/obui-input&gt;
+&lt;obui-input disabled value="Disabled"&gt;&lt;/obui-input&gt;
+&lt;obui-input required placeholder="Required"&gt;&lt;/obui-input&gt;</code></pre>
+
+<h3>Properties</h3>
+<table>
+    <tr><th>Property</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr>
+    <tr><td><code>type</code></td><td><code>type</code></td><td><code>string</code></td><td><code>"text"</code></td><td>Input type (text, number, password, etc.)</td></tr>
+    <tr><td><code>value</code></td><td><code>value</code></td><td><code>string</code></td><td><code>""</code></td><td>Current value.</td></tr>
+    <tr><td><code>placeholder</code></td><td><code>placeholder</code></td><td><code>string</code></td><td><code>""</code></td><td>Placeholder text.</td></tr>
+    <tr><td><code>disabled</code></td><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Disables the input.</td></tr>
+    <tr><td><code>required</code></td><td><code>required</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Marks as required (shows red border when empty).</td></tr>
+    <tr><td><code>min</code></td><td><code>min</code></td><td><code>string</code></td><td>—</td><td>Minimum value (for number inputs).</td></tr>
+    <tr><td><code>max</code></td><td><code>max</code></td><td><code>string</code></td><td>—</td><td>Maximum value (for number inputs).</td></tr>
+    <tr><td><code>step</code></td><td><code>step</code></td><td><code>string</code></td><td>—</td><td>Step increment (for number inputs).</td></tr>
+    <tr><td><code>ariaLabel</code></td><td><code>aria-label</code></td><td><code>string | null</code></td><td><code>null</code></td><td>Accessible label passed through to the inner <code>&lt;input&gt;</code>. Use when no visible label is present.</td></tr>
+</table>
+
+<h3>Read-only Properties</h3>
+<table>
+    <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    <tr><td><code>valueAsNumber</code></td><td><code>number</code></td><td>The value as a number (NaN if not numeric).</td></tr>
+</table>
+
+<h3>Methods</h3>
+<table>
+    <tr><th>Method</th><th>Description</th></tr>
+    <tr><td><code>focus(options?)</code></td><td>Focuses the inner input element.</td></tr>
+</table>
+
+<h3>Events</h3>
+<table>
+    <tr><th>Event</th><th>Detail</th><th>Description</th></tr>
+    <tr><td><code>input</code></td><td>none</td><td>Fired on each keystroke. Read <code>.value</code> for the current text.</td></tr>
+    <tr><td><code>change</code></td><td>none</td><td>Fired when the value is committed (blur or Enter).</td></tr>
+</table>
+
+<h3>CSS Parts</h3>
+<table>
+    <tr><th>Part</th><th>Description</th></tr>
+    <tr><td><code>input</code></td><td>The inner <code>&lt;input&gt;</code> element.</td></tr>
+</table>
+
+<pre><code class="language-javascript">// Listening for events:
+const input = document.querySelector('obui-input');
+input.addEventListener('input', (e) => console.log('typing:', e.target.value));
+input.addEventListener('change', (e) => console.log('committed:', e.target.value));</code></pre>
+
+<!-- ================================================================ -->
+<h2 id="select">&lt;obui-select&gt;</h2>
+
+<p>A single-value dropdown. Options are set via the <code>options</code> property (a <code>Record&lt;string, string&gt;</code> mapping keys to display labels). Opens on focus, supports keyboard navigation.</p>
+
+<div class="demo">
+    <div class="demo-grid">
+        <obui-select id="doc-select" placeholder="Choose a shape..." aria-label="Shape"></obui-select>
+        <obui-select id="doc-select-pre" aria-label="Pre-selected"></obui-select>
+        <obui-select id="doc-select-disabled" disabled aria-label="Disabled"></obui-select>
+    </div>
+</div>
+
+<pre><code class="language-html">&lt;obui-select id="my-select" placeholder="Choose..."&gt;&lt;/obui-select&gt;
+
+&lt;script&gt;
+const select = document.getElementById('my-select');
+select.options = {
+    circle: 'Circle',
+    square: 'Square',
+    triangle: 'Triangle',
+};
+select.value = 'square'; // pre-select
+
+select.addEventListener('change', (e) =&gt; {
+    console.log('selected:', e.target.value);
+});
+&lt;/script&gt;</code></pre>
+
+<h3>Properties</h3>
+<table>
+    <tr><th>Property</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr>
+    <tr><td><code>options</code></td><td>—</td><td><code>Record&lt;string, string&gt;</code></td><td><code>{}</code></td><td>Key-value pairs. Keys are the values, values are the display labels. Set via JS property.</td></tr>
+    <tr><td><code>value</code></td><td><code>value</code></td><td><code>string</code></td><td><code>""</code></td><td>Currently selected key.</td></tr>
+    <tr><td><code>placeholder</code></td><td><code>placeholder</code></td><td><code>string</code></td><td><code>""</code></td><td>Text shown when no value is selected.</td></tr>
+    <tr><td><code>disabled</code></td><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>When true, prevents interaction and applies disabled styling.</td></tr>
+    <tr><td><code>ariaLabel</code></td><td><code>aria-label</code></td><td><code>string | null</code></td><td><code>null</code></td><td>Accessible label for the combobox. Applied to the listbox element.</td></tr>
+</table>
+
+<h3>Events</h3>
+<table>
+    <tr><th>Event</th><th>Detail</th><th>Description</th></tr>
+    <tr><td><code>change</code></td><td>none</td><td>Fired when a new option is selected. Read <code>.value</code> for the selected key.</td></tr>
+</table>
+
+<h3>Keyboard</h3>
+<table>
+    <tr><th>Key</th><th>Action</th></tr>
+    <tr><td>Arrow Down / Up</td><td>Navigate options</td></tr>
+    <tr><td>Home / End</td><td>Jump to first / last option</td></tr>
+    <tr><td>Enter / Space</td><td>Select focused option</td></tr>
+    <tr><td>Escape</td><td>Close dropdown</td></tr>
+</table>
+
+<h3>Accessibility</h3>
+<p>The host element has <code>role="combobox"</code> with <code>aria-expanded</code>, <code>aria-haspopup="listbox"</code>, and <code>aria-activedescendant</code>. The dropdown has <code>role="listbox"</code> and each option has <code>role="option"</code> with <code>aria-selected</code>.</p>
+
+<!-- ================================================================ -->
+<h2 id="multi-select">&lt;obui-multi-select&gt;</h2>
+
+<p>A multi-value dropdown with checkboxes. Same API pattern as <code>&lt;obui-select&gt;</code> but <code>value</code> is a <code>string[]</code>.</p>
+
+<div class="demo">
+    <div class="demo-grid">
+        <obui-multi-select id="doc-multi" placeholder="Pick colours..." aria-label="Colours"></obui-multi-select>
+        <obui-multi-select id="doc-multi-pre" aria-label="Pre-selected"></obui-multi-select>
+        <obui-multi-select id="doc-multi-disabled" disabled aria-label="Disabled"></obui-multi-select>
+    </div>
+</div>
+
+<pre><code class="language-html">&lt;obui-multi-select id="my-multi" placeholder="Pick..."&gt;&lt;/obui-multi-select&gt;
+
+&lt;script&gt;
+const multi = document.getElementById('my-multi');
+multi.options = {
+    red: 'Red',
+    green: 'Green',
+    blue: 'Blue',
+};
+multi.value = ['red', 'blue']; // pre-select
+
+multi.addEventListener('change', (e) =&gt; {
+    console.log('selected:', e.target.value); // string[]
+});
+&lt;/script&gt;</code></pre>
+
+<h3>Properties</h3>
+<table>
+    <tr><th>Property</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr>
+    <tr><td><code>options</code></td><td>—</td><td><code>Record&lt;string, string&gt;</code></td><td><code>{}</code></td><td>Key-value pairs. Set via JS property.</td></tr>
+    <tr><td><code>value</code></td><td>—</td><td><code>string[]</code></td><td><code>[]</code></td><td>Array of selected keys. Set via JS property.</td></tr>
+    <tr><td><code>placeholder</code></td><td><code>placeholder</code></td><td><code>string</code></td><td><code>"None"</code></td><td>Text shown when nothing is selected.</td></tr>
+    <tr><td><code>disabled</code></td><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>When true, prevents interaction and applies disabled styling.</td></tr>
+    <tr><td><code>ariaLabel</code></td><td><code>aria-label</code></td><td><code>string | null</code></td><td><code>null</code></td><td>Accessible label for the combobox. Applied to the listbox element.</td></tr>
+</table>
+
+<h3>Events</h3>
+<table>
+    <tr><th>Event</th><th>Detail</th><th>Description</th></tr>
+    <tr><td><code>change</code></td><td>none</td><td>Fired when selection changes. Read <code>.value</code> for the selected keys array.</td></tr>
+</table>
+
+<h3>Keyboard</h3>
+<table>
+    <tr><th>Key</th><th>Action</th></tr>
+    <tr><td>Arrow Down / Up</td><td>Navigate options</td></tr>
+    <tr><td>Home / End</td><td>Jump to first / last option</td></tr>
+    <tr><td>Enter / Space</td><td>Toggle focused option</td></tr>
+    <tr><td>Escape</td><td>Close dropdown</td></tr>
+</table>
+
+<h3>Accessibility</h3>
+<p>Same ARIA pattern as <code>&lt;obui-select&gt;</code>. Options additionally have <code>aria-checked</code> for checkbox state.</p>
+
+<!-- ================================================================ -->
+<h2 id="tabs">&lt;obui-tab-bar&gt; + &lt;obui-tab-button&gt;</h2>
+
+<p>A tab bar that manages tab buttons. Each <code>&lt;obui-tab-button&gt;</code> can target an element to show/hide via CSS selector or element reference. Follows the <a href="https://www.w3.org/WAI/ARIA/apg/patterns/tabs/">WAI-ARIA Tabs pattern</a> with <code>role="tablist"</code>, <code>role="tab"</code>, and keyboard navigation.</p>
+
+<div class="demo">
+    <obui-tab-bar id="doc-tab-bar">
+        <obui-tab-button active target="#doc-panel-1">Settings</obui-tab-button>
+        <obui-tab-button target="#doc-panel-2">Appearance</obui-tab-button>
+        <obui-tab-button target="#doc-panel-3">About</obui-tab-button>
+    </obui-tab-bar>
+    <div class="tab-content">
+        <div id="doc-panel-1">Settings panel content.</div>
+        <div id="doc-panel-2" style="display: none;">Appearance panel content.</div>
+        <div id="doc-panel-3" style="display: none;">About panel content.</div>
+    </div>
+</div>
+
+<pre><code class="language-html">&lt;obui-tab-bar id="tabs"&gt;
+    &lt;obui-tab-button active target="#panel-a"&gt;Settings&lt;/obui-tab-button&gt;
+    &lt;obui-tab-button target="#panel-b"&gt;Appearance&lt;/obui-tab-button&gt;
+    &lt;obui-tab-button target="#panel-c"&gt;About&lt;/obui-tab-button&gt;
+&lt;/obui-tab-bar&gt;
+&lt;div id="panel-a"&gt;Settings content.&lt;/div&gt;
+&lt;div id="panel-b" style="display: none;"&gt;Appearance content.&lt;/div&gt;
+&lt;div id="panel-c" style="display: none;"&gt;About content.&lt;/div&gt;
+
+&lt;script&gt;
+document.getElementById('tabs').addEventListener('tab-change', (e) =&gt; {
+    console.log('switched to:', e.detail.tab.textContent);
+});
+
+// Programmatic selection:
+document.getElementById('tabs').selectTab('about-tab');    // by element id
+document.getElementById('tabs').selectTab(tabButtonRef);  // by reference
+document.getElementById('tabs').selectTab(null);          // deselect all
+&lt;/script&gt;</code></pre>
+
+<h3>&lt;obui-tab-bar&gt; API</h3>
+
+<p><strong>Properties:</strong> None.</p>
+
+<table>
+    <tr><th>Method</th><th>Description</th></tr>
+    <tr><td><code>selectTab(tab)</code></td><td>Select a tab by <code>ObUITabButton</code> reference, element <code>id</code> string, or <code>null</code> to deselect all. <strong>Does not</strong> fire <code>tab-change</code> — only user clicks do.</td></tr>
+</table>
+
+<table>
+    <tr><th>Event</th><th>Detail</th><th>Description</th></tr>
+    <tr><td><code>tab-change</code></td><td><code>{ tab: ObUITabButton }</code></td><td>Fired when the active tab changes. <code>e.detail.tab</code> is the newly active tab button element.</td></tr>
+</table>
+
+<h3>&lt;obui-tab-button&gt; API</h3>
+
+<table>
+    <tr><th>Property</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr>
+    <tr><td><code>active</code></td><td><code>active</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Whether this tab is currently active.</td></tr>
+    <tr><td><code>target</code></td><td><code>target</code></td><td><code>HTMLElement | string</code></td><td><code>""</code></td><td>Element or CSS selector of the panel to show/hide. Resolved via <code>getRootNode()</code> first (shadow DOM aware), then <code>document.querySelector</code>.</td></tr>
+</table>
+
+
+<h3>Slots</h3>
+<table>
+    <tr><th>Slot</th><th>Description</th></tr>
+    <tr><td>(default)</td><td>Tab label text.</td></tr>
+</table>
+
+<h3>CSS Parts</h3>
+<table>
+    <tr><th>Part</th><th>Description</th></tr>
+    <tr><td><code>button</code></td><td>The inner <code>&lt;button&gt;</code> element (on <code>&lt;obui-tab-button&gt;</code>).</td></tr>
+</table>
+
+<h3>Keyboard</h3>
+<table>
+    <tr><th>Key</th><th>Action</th></tr>
+    <tr><td>Arrow Right / Down</td><td>Next tab (wraps around)</td></tr>
+    <tr><td>Arrow Left / Up</td><td>Previous tab (wraps around)</td></tr>
+    <tr><td>Home / End</td><td>First / last tab</td></tr>
+</table>
+
+<h3>Accessibility</h3>
+<p>The tab bar has <code>role="tablist"</code>. Each tab button renders <code>role="tab"</code> with <code>aria-selected</code> and <code>aria-controls</code> (linking to the target panel ID). Target panels are automatically given <code>role="tabpanel"</code>. Uses roving <code>tabindex</code> — only the active tab is in the tab order.</p>
+
+<!-- ================================================================ -->
+<h2 id="help-tooltip">&lt;obui-help-tooltip&gt;</h2>
+
+<p>A "?" button that opens a modal <code>&lt;dialog&gt;</code> with blurred backdrop. Click the backdrop or press Escape to close. Smart positioning — flips above if it would overflow the viewport. The button has <code>aria-label="Help"</code> and <code>aria-haspopup="dialog"</code>. Focus moves into the dialog on open and returns to the trigger on close.</p>
+
+<div class="demo">
+    <div class="demo-row">
+        <span>Click for help:</span>
+        <obui-help-tooltip>
+            <p><strong>Help Dialog</strong></p>
+            <p>This content appears in a modal dialog. Click outside to close.</p>
+        </obui-help-tooltip>
+    </div>
+</div>
+
+<pre><code class="language-html">&lt;obui-help-tooltip&gt;
+    &lt;p&gt;&lt;strong&gt;Help Title&lt;/strong&gt;&lt;/p&gt;
+    &lt;p&gt;Explanation text goes here.&lt;/p&gt;
+&lt;/obui-help-tooltip&gt;</code></pre>
+
+<h3>Properties</h3>
+<p>None.</p>
+
+<h3>Slots</h3>
+<table>
+    <tr><th>Slot</th><th>Description</th></tr>
+    <tr><td>(default)</td><td>Content to display inside the dialog.</td></tr>
+</table>
+
+<!-- ================================================================ -->
+<h2 id="toggle">&lt;obui-toggle&gt;</h2>
+
+<p>A toggle switch (checkbox alternative). Renders as a pill-shaped track with a sliding circular thumb. Uses <code>role="switch"</code> with <code>aria-checked</code> for accessibility.</p>
+
+<div class="demo">
+    <div class="demo-row">
+        <obui-toggle id="doc-toggle"></obui-toggle>
+        <obui-toggle checked></obui-toggle>
+        <obui-toggle disabled></obui-toggle>
+        <obui-toggle disabled checked></obui-toggle>
+        <obui-toggle id="doc-toggle-labelled" aria-label="Dark Mode"></obui-toggle>
+    </div>
+</div>
+
+<pre><code class="language-html">&lt;obui-toggle&gt;&lt;/obui-toggle&gt;
+&lt;obui-toggle checked&gt;&lt;/obui-toggle&gt;
+&lt;obui-toggle disabled&gt;&lt;/obui-toggle&gt;
+
+&lt;obui-toggle aria-label="Dark Mode"&gt;&lt;/obui-toggle&gt;
+
+&lt;script&gt;
+const toggle = document.querySelector('obui-toggle');
+toggle.addEventListener('change', (e) =&gt; {
+    console.log('checked:', e.target.checked);
+});
+
+// Programmatic control:
+toggle.checked = true;
+&lt;/script&gt;</code></pre>
+
+<h3>Properties</h3>
+<table>
+    <tr><th>Property</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr>
+    <tr><td><code>checked</code></td><td><code>checked</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Whether the toggle is on.</td></tr>
+    <tr><td><code>disabled</code></td><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Reduces opacity and disables interaction.</td></tr>
+    <tr><td><code>ariaLabel</code></td><td><code>aria-label</code></td><td><code>string | null</code></td><td><code>null</code></td><td>Accessible label passed through to the inner button.</td></tr>
+</table>
+
+<h3>Events</h3>
+<table>
+    <tr><th>Event</th><th>Detail</th><th>Description</th></tr>
+    <tr><td><code>change</code></td><td>none</td><td>Fired when the toggle is clicked. Read <code>.checked</code> for the new state.</td></tr>
+</table>
+
+<h3>CSS Parts</h3>
+<table>
+    <tr><th>Part</th><th>Description</th></tr>
+    <tr><td><code>button</code></td><td>The inner <code>&lt;button&gt;</code> element with <code>role="switch"</code>.</td></tr>
+</table>
+
+<!-- ================================================================ -->
+<h2 id="color-picker">&lt;obui-color-picker&gt;</h2>
+
+<p>A color swatch button that opens a hex+alpha color picker in a modal dialog. Requires <code>vanilla-colorful</code> as an optional peer dependency. The swatch button has <code>aria-haspopup="dialog"</code>. Focus moves into the dialog on open and returns to the swatch on close.</p>
+
+<p><strong>Separate import:</strong></p>
+<pre><code class="language-javascript">import '@davidsev/owlbear-ui/color-picker';</code></pre>
+
+<div class="demo">
+    <div class="demo-row">
+        <div>
+            <div style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 0.25rem;">Default</div>
+            <obui-color-picker id="doc-picker"></obui-color-picker>
+        </div>
+        <div>
+            <div style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 0.25rem;">Red, 50% opacity</div>
+            <obui-color-picker id="doc-picker-red" color="#ff0000" opacity="0.5"></obui-color-picker>
+        </div>
+        <div>
+            <div style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 0.25rem;">Named color</div>
+            <obui-color-picker id="doc-picker-named" color="rebeccapurple"></obui-color-picker>
+        </div>
+    </div>
+</div>
+
+<pre><code class="language-html">&lt;obui-color-picker color="#ff0000" opacity="0.5"&gt;&lt;/obui-color-picker&gt;
+
+&lt;script&gt;
+const picker = document.querySelector('obui-color-picker');
+
+// Fires continuously while dragging:
+picker.addEventListener('input', () =&gt; {
+    console.log(picker.color);   // "#ff0000" (6-char hex)
+    console.log(picker.opacity); // 0.5 (0-1)
+    console.log(picker.hexa);    // "#ff000080" (8-char hex)
+});
+
+// Fires once when the picker dialog closes:
+picker.addEventListener('change', () =&gt; {
+    console.log('committed:', picker.color, picker.opacity);
+});
+&lt;/script&gt;</code></pre>
+
+<h3>Properties</h3>
+<table>
+    <tr><th>Property</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr>
+    <tr><td><code>color</code></td><td><code>color</code></td><td><code>string</code></td><td><code>"#000000"</code></td><td>The color value. Accepts any CSS color (hex, named, shorthand). Normalized internally.</td></tr>
+    <tr><td><code>opacity</code></td><td><code>opacity</code></td><td><code>number</code></td><td><code>1</code></td><td>Opacity from 0 to 1.</td></tr>
+    <tr><td><code>ariaLabel</code></td><td><code>aria-label</code></td><td><code>string | null</code></td><td><code>"Color picker"</code></td><td>Accessible label for the swatch button and dialog.</td></tr>
+</table>
+
+<h3>Read-only Properties</h3>
+<table>
+    <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+    <tr><td><code>hexa</code></td><td><code>string</code></td><td>Combined color + opacity as 8-character hex (e.g. <code>"#ff000080"</code>).</td></tr>
+</table>
+
+<h3>Events</h3>
+<table>
+    <tr><th>Event</th><th>Detail</th><th>Description</th></tr>
+    <tr><td><code>input</code></td><td>none</td><td>Fired continuously as the color/opacity changes while the picker is open. Read <code>.color</code>, <code>.opacity</code>, or <code>.hexa</code> for the current values.</td></tr>
+    <tr><td><code>change</code></td><td>none</td><td>Fired once when the picker dialog is closed.</td></tr>
+</table>
+
+<!-- ================================================================ -->
+
+<!-- Prism.js for syntax highlighting (no theme CSS — custom tokens above) -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/prism.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+
+<!-- App script (type=module, runs after Prism has highlighted) -->
+<script type="module">
+    import {
+        ThemeManager,
+        ObUIButton,
+        ObUIInput,
+        ObUITabBar,
+        ObUITabButton,
+        ObUISelect,
+        ObUIMultiSelect,
+        ObUIHelpTooltip,
+        ObUIToggle,
+    } from './dist/index.js';
+    import { ObUIColorPicker } from './dist/color-picker.js';
+
+    // --- Theme toggle ---
+    const tm = ThemeManager.getInstance();
+    const toggleBtn = document.getElementById('theme-toggle');
+
+    function updateToggleLabel() {
+        toggleBtn.textContent = `Toggle Theme (${tm.darkMode ? 'Dark' : 'Light'})`;
+    }
+
+    toggleBtn.addEventListener('click', () => {
+        tm.setTheme(tm.darkMode ? 'light' : 'dark');
+    });
+
+    tm.addEventListener('change', () => {
+        console.log('[ThemeManager] change →', tm.darkMode ? 'dark' : 'light');
+        updateToggleLabel();
+    });
+
+    // --- Select options ---
+    const shapeOptions = { circle: 'Circle', square: 'Square', triangle: 'Triangle', hexagon: 'Hexagon' };
+
+    document.getElementById('doc-select').options = shapeOptions;
+
+    const selectPre = document.getElementById('doc-select-pre');
+    selectPre.options = shapeOptions;
+    selectPre.value = 'triangle';
+
+    const selectDisabled = document.getElementById('doc-select-disabled');
+    selectDisabled.options = shapeOptions;
+    selectDisabled.value = 'square';
+
+    // --- MultiSelect options ---
+    const colourOptions = { red: 'Red', green: 'Green', blue: 'Blue', yellow: 'Yellow', purple: 'Purple' };
+
+    document.getElementById('doc-multi').options = colourOptions;
+
+    const multiPre = document.getElementById('doc-multi-pre');
+    multiPre.options = colourOptions;
+    multiPre.value = ['red', 'blue'];
+
+    const multiDisabled = document.getElementById('doc-multi-disabled');
+    multiDisabled.options = colourOptions;
+    multiDisabled.value = ['green'];
+
+    // --- Wire all events to console ---
+    function log(name, type, detail) {
+        if (detail !== undefined) {
+            console.log(`[${name}] ${type} →`, detail);
+        } else {
+            console.log(`[${name}] ${type}`);
+        }
+    }
+
+    // Buttons
+    document.getElementById('doc-btn')?.addEventListener('click', () => log('button', 'click'));
+    document.getElementById('doc-btn-icon')?.addEventListener('click', () => log('button-icon', 'click'));
+
+    // Inputs
+    for (const el of document.querySelectorAll('obui-input')) {
+        el.addEventListener('input', (e) => log('input', 'input', e.target.value));
+        el.addEventListener('change', (e) => log('input', 'change', e.target.value));
+    }
+
+    // Selects
+    for (const id of ['doc-select', 'doc-select-pre']) {
+        document.getElementById(id)?.addEventListener('change', (e) => log(id, 'change', e.target.value));
+    }
+
+    // MultiSelects
+    for (const id of ['doc-multi', 'doc-multi-pre']) {
+        document.getElementById(id)?.addEventListener('change', (e) => log(id, 'change', [...e.target.value]));
+    }
+
+    // TabBar
+    document.getElementById('doc-tab-bar')?.addEventListener('tab-change', (e) => {
+        log('tab-bar', 'tab-change', e.detail.tab.textContent.trim());
+    });
+
+    // Toggles
+    for (const el of document.querySelectorAll('obui-toggle')) {
+        el.addEventListener('change', (e) => log('toggle', 'change', e.target.checked));
+    }
+
+    // ColorPickers
+    for (const el of document.querySelectorAll('obui-color-picker')) {
+        el.addEventListener('input', (e) => {
+            log('color-picker', 'input', { color: e.target.color, opacity: e.target.opacity.toFixed(2), hexa: e.target.hexa });
+        });
+        el.addEventListener('change', (e) => {
+            log('color-picker', 'change', { color: e.target.color, opacity: e.target.opacity.toFixed(2), hexa: e.target.hexa });
+        });
+    }
+</script>
+
+</body>
+</html>

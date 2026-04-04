@@ -1,0 +1,17 @@
+.item {
+  padding: 0 0.5em;
+  height: 1.75em;
+  line-height: 2;
+  align-content: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.item:hover,
+.item.focused {
+  background-color: rgba(var(--theme-rgb), 0.3);
+}
+
+.item.active {
+  color: var(--theme-color);
+}

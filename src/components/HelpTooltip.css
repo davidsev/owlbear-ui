@@ -1,0 +1,51 @@
+:host {
+  display: inline-block;
+}
+
+button {
+  border-radius: 50%;
+  width: 1.5em;
+  height: 1.5em;
+  line-height: 1em;
+  padding: 0.25em;
+  margin: 0;
+  vertical-align: middle;
+  text-align: center;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+
+  border: 2px solid rgba(var(--theme-rgb), 1);
+  background-color: rgba(var(--theme-rgb), 0.2);
+  color: var(--text-color);
+
+  &:hover {
+    background-color: rgba(var(--theme-rgb), 1);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--theme-color);
+    outline-offset: 2px;
+  }
+}
+
+dialog {
+  position: fixed;
+  inset: auto 5%;
+  width: 90%;
+  height: fit-content;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 1rem;
+  background-color: var(--panel-color);
+  color: var(--text-color);
+
+  div {
+    padding: 1rem;
+  }
+
+  &::backdrop {
+    backdrop-filter: blur(3px);
+  }
+}

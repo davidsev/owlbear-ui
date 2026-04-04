@@ -1,0 +1,15 @@
+@import "modern-normalize/modern-normalize.css";
+
+:root[data-theme="light"] {
+  --text-rgb: 0, 0, 0;
+  --theme-rgb: 187, 153, 255;
+  --background-rgb: 229, 231, 235;
+  --panel-rgb: 242, 243, 249;
+}
+
+:root[data-theme="dark"] {
+  --text-rgb: 255, 255, 255;
+  --theme-rgb: 187, 153, 255;
+  --background-rgb: 46, 49, 66;
+  --panel-rgb: 34, 39, 56;
+}

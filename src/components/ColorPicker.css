@@ -1,0 +1,40 @@
+:host {
+  display: inline-block;
+}
+
+button.swatch {
+  width: 2em;
+  height: 2em;
+  padding: 0;
+  margin: 0;
+  border: 2px solid rgba(var(--text-rgb), 0.3);
+  border-radius: 0.375em;
+  cursor: pointer;
+  vertical-align: middle;
+
+  &:hover {
+    border-color: rgba(var(--text-rgb), 0.6);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--theme-color);
+    outline-offset: 2px;
+  }
+}
+
+dialog {
+  position: fixed;
+  inset: 0;
+  width: fit-content;
+  height: fit-content;
+  margin: auto;
+  padding: 1rem;
+  border: none;
+  border-radius: 1rem;
+  background-color: var(--panel-color);
+  color: var(--text-color);
+
+  &::backdrop {
+    backdrop-filter: blur(3px);
+  }
+}

@@ -1,0 +1,48 @@
+:host {
+  display: block;
+}
+
+input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--background-color);
+  border: none;
+  border-bottom: 2px solid rgba(var(--text-rgb), 0.2);
+  color: var(--text-color);
+  font-family: inherit;
+  font-size: 0.875em;
+  line-height: 1.5;
+  padding: 0.375em 0.5em;
+  transition: border-color 0.15s ease;
+}
+
+input:focus {
+  outline: none;
+  border-bottom: 3px solid var(--theme-color);
+  padding-bottom: calc(0.375em - 1px);
+}
+
+input:user-invalid {
+  border-color: red;
+}
+
+input::placeholder {
+  color: var(--text-secondary-color);
+}
+
+/* Hide native number spinners */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+:host([disabled]) input {
+  opacity: 0.5;
+  pointer-events: none;
+}

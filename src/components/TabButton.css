@@ -1,0 +1,37 @@
+:host {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375em;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary-color);
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 0.875em;
+  line-height: 1.5;
+  padding: 0.5em 0.75em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+button:hover {
+  color: var(--text-color);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--theme-color);
+  outline-offset: -2px;
+  border-radius: 2px;
+}
+
+:host([active]) button {
+  color: var(--theme-color);
+  border-bottom-color: var(--theme-color);
+}

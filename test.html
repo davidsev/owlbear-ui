@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>owlbear-ui Test Page</title>
+    <script type="importmap">
+    {
+        "imports": {
+            "lit": "https://esm.sh/lit@3",
+            "lit/": "https://esm.sh/lit@3/",
+            "tslib": "https://esm.sh/tslib@2",
+            "vanilla-colorful/": "https://esm.sh/vanilla-colorful@0.7/"
+        }
+    }
+    </script>
+    <style>
+        body {
+            margin: 0;
+            padding: 2rem;
+            font-family: sans-serif;
+            background-color: rgb(var(--panel-rgb));
+            background-image: linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12));
+            color: rgb(var(--text-rgb));
+            transition: background 0.2s, color 0.2s;
+        }
+
+        h1 { margin-top: 0; }
+        h2 {
+            margin-top: 2rem;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(var(--text-rgb), 0.15);
+            padding-bottom: 0.25rem;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 0.75rem 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 0.75rem 0;
+        }
+
+        .label {
+            font-size: 0.75rem;
+            opacity: 0.6;
+            margin-bottom: 0.25rem;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            border: 2px solid rgba(var(--text-rgb), 0.3);
+            border-radius: 0.5rem;
+            background: rgb(var(--panel-rgb));
+            color: rgb(var(--text-rgb));
+            cursor: pointer;
+            font-size: 0.875rem;
+            z-index: 1000;
+        }
+        .theme-toggle:hover {
+            border-color: rgba(var(--text-rgb), 0.6);
+        }
+
+        .tab-content {
+            padding: 1rem;
+            border: 1px solid rgba(var(--text-rgb), 0.1);
+            border-top: none;
+        }
+
+        code {
+            font-size: 0.8em;
+            background: rgba(var(--text-rgb), 0.1);
+            padding: 0.1em 0.3em;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+
+<button class="theme-toggle" id="theme-toggle">Toggle Theme (Dark)</button>
+
+<h1>owlbear-ui Component Test Page</h1>
+
+<!-- ===== Button ===== -->
+<h2>obui-button</h2>
+<div class="row">
+    <div>
+        <div class="label">Default</div>
+        <obui-button id="btn-default">Click Me</obui-button>
+    </div>
+    <div>
+        <div class="label">Disabled</div>
+        <obui-button disabled id="btn-disabled">Disabled</obui-button>
+    </div>
+    <div>
+        <div class="label">With icon text</div>
+        <obui-button id="btn-icon">&#9733; Starred</obui-button>
+    </div>
+    <div>
+        <div class="label">Icon-only (aria-label)</div>
+        <obui-button id="btn-close" aria-label="Close">&#10005;</obui-button>
+    </div>
+</div>
+
+<!-- ===== Input ===== -->
+<h2>obui-input</h2>
+<div class="grid">
+    <div>
+        <div class="label">Text (default)</div>
+        <obui-input id="input-text" placeholder="Enter text..."></obui-input>
+    </div>
+    <div>
+        <div class="label">Number with min/max/step</div>
+        <obui-input id="input-number" type="number" min="0" max="100" step="5" value="50" placeholder="0-100"></obui-input>
+    </div>
+    <div>
+        <div class="label">Required (empty = invalid)</div>
+        <obui-input id="input-required" required placeholder="Required field"></obui-input>
+    </div>
+    <div>
+        <div class="label">Disabled</div>
+        <obui-input id="input-disabled" disabled value="Can't edit this"></obui-input>
+    </div>
+    <div>
+        <div class="label">Password</div>
+        <obui-input id="input-password" type="password" placeholder="Password"></obui-input>
+    </div>
+</div>
+
+<!-- ===== Select ===== -->
+<h2>obui-select</h2>
+<div class="grid">
+    <div>
+        <div class="label">Shape</div>
+        <obui-select id="select-default" placeholder="Choose a shape..."></obui-select>
+    </div>
+    <div>
+        <div class="label">Pre-selected</div>
+        <obui-select id="select-preselected"></obui-select>
+    </div>
+    <div>
+        <div class="label">Disabled</div>
+        <obui-select id="select-disabled" disabled></obui-select>
+    </div>
+</div>
+
+<!-- ===== MultiSelect ===== -->
+<h2>obui-multi-select</h2>
+<div class="grid">
+    <div>
+        <div class="label">Colours</div>
+        <obui-multi-select id="multi-default" placeholder="Pick colours..."></obui-multi-select>
+    </div>
+    <div>
+        <div class="label">Pre-selected</div>
+        <obui-multi-select id="multi-preselected"></obui-multi-select>
+    </div>
+    <div>
+        <div class="label">Disabled</div>
+        <obui-multi-select id="multi-disabled" disabled></obui-multi-select>
+    </div>
+</div>
+
+<!-- ===== TabBar + TabButton ===== -->
+<h2>obui-tab-bar + obui-tab-button</h2>
+<obui-tab-bar id="tab-bar">
+    <obui-tab-button active target="#tab-panel-1">Tab One</obui-tab-button>
+    <obui-tab-button target="#tab-panel-2">Tab Two</obui-tab-button>
+    <obui-tab-button target="#tab-panel-3">Tab Three</obui-tab-button>
+</obui-tab-bar>
+<div class="tab-content">
+    <div id="tab-panel-1">Content for <strong>Tab One</strong>. This panel is visible by default.</div>
+    <div id="tab-panel-2" style="display: none;">Content for <strong>Tab Two</strong>. Switched via target.</div>
+    <div id="tab-panel-3" style="display: none;">Content for <strong>Tab Three</strong>. Another panel.</div>
+</div>
+
+<!-- ===== HelpTooltip ===== -->
+<h2>obui-help-tooltip</h2>
+<div class="row">
+    <span>Click the button for help</span>
+    <obui-help-tooltip id="tooltip">
+        <p><strong>Help!</strong></p>
+        <p>This is a help tooltip using a modal dialog. Click the backdrop to close it.</p>
+    </obui-help-tooltip>
+</div>
+
+<!-- ===== Toggle ===== -->
+<h2>obui-toggle</h2>
+<div class="row">
+    <div>
+        <div class="label">Default (off)</div>
+        <obui-toggle id="toggle-default"></obui-toggle>
+    </div>
+    <div>
+        <div class="label">Pre-checked (on)</div>
+        <obui-toggle id="toggle-checked" checked></obui-toggle>
+    </div>
+    <div>
+        <div class="label">Disabled (off)</div>
+        <obui-toggle id="toggle-disabled-off" disabled></obui-toggle>
+    </div>
+    <div>
+        <div class="label">Disabled (on)</div>
+        <obui-toggle id="toggle-disabled-on" disabled checked></obui-toggle>
+    </div>
+    <div>
+        <div class="label">With aria-label</div>
+        <obui-toggle id="toggle-labelled" aria-label="Dark Mode"></obui-toggle>
+    </div>
+</div>
+
+<!-- ===== ColorPicker ===== -->
+<h2>obui-color-picker</h2>
+<div class="row">
+    <div>
+        <div class="label">Default (#000000, opacity 1)</div>
+        <obui-color-picker id="picker-default"></obui-color-picker>
+    </div>
+    <div>
+        <div class="label">Red, 50% opacity</div>
+        <obui-color-picker id="picker-red" color="#ff0000" opacity="0.5" aria-label="Foreground color"></obui-color-picker>
+    </div>
+    <div>
+        <div class="label">Named color ("rebeccapurple")</div>
+        <obui-color-picker id="picker-named" color="rebeccapurple"></obui-color-picker>
+    </div>
+    <div>
+        <div class="label">Shorthand hex ("#0ff")</div>
+        <obui-color-picker id="picker-short" color="#0ff" opacity="0.8"></obui-color-picker>
+    </div>
+</div>
+
+<script type="module">
+    import {
+        ThemeManager,
+        ObUIButton,
+        ObUIInput,
+        ObUITabBar,
+        ObUITabButton,
+        ObUISelect,
+        ObUIMultiSelect,
+        ObUIHelpTooltip,
+        ObUIToggle,
+    } from './dist/index.js';
+    import { ObUIColorPicker } from './dist/color-picker.js';
+
+    // --- Theme toggle ---
+    const tm = ThemeManager.getInstance();
+    const toggleBtn = document.getElementById('theme-toggle');
+
+    function updateToggleLabel() {
+        toggleBtn.textContent = `Toggle Theme (${tm.darkMode ? 'Dark' : 'Light'})`;
+    }
+
+    toggleBtn.addEventListener('click', () => {
+        tm.setTheme(tm.darkMode ? 'light' : 'dark');
+    });
+
+    tm.addEventListener('change', () => {
+        console.log('[ThemeManager] change →', tm.darkMode ? 'dark' : 'light');
+        updateToggleLabel();
+    });
+
+    // --- Set up Select options ---
+    const shapeOptions = { circle: 'Circle', square: 'Square', triangle: 'Triangle', hexagon: 'Hexagon' };
+
+    document.getElementById('select-default').options = shapeOptions;
+
+    const preselected = document.getElementById('select-preselected');
+    preselected.options = shapeOptions;
+    preselected.value = 'triangle';
+
+    const selectDisabled = document.getElementById('select-disabled');
+    selectDisabled.options = shapeOptions;
+    selectDisabled.value = 'square';
+
+    // --- Set up MultiSelect options ---
+    const colourOptions = { red: 'Red', green: 'Green', blue: 'Blue', yellow: 'Yellow', purple: 'Purple' };
+
+    document.getElementById('multi-default').options = colourOptions;
+
+    const multiPre = document.getElementById('multi-preselected');
+    multiPre.options = colourOptions;
+    multiPre.value = ['red', 'blue'];
+
+    const multiDisabled = document.getElementById('multi-disabled');
+    multiDisabled.options = colourOptions;
+    multiDisabled.value = ['green'];
+
+    // --- Wire up all events to console ---
+    function log(name, type, detail) {
+        if (detail !== undefined) {
+            console.log(`[${name}] ${type} →`, detail);
+        } else {
+            console.log(`[${name}] ${type}`);
+        }
+    }
+
+    // Buttons
+    for (const id of ['btn-default', 'btn-disabled', 'btn-icon']) {
+        document.getElementById(id)?.addEventListener('click', () => log(id, 'click'));
+    }
+
+    // Inputs
+    for (const id of ['input-text', 'input-number', 'input-required', 'input-disabled', 'input-password']) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        el.addEventListener('input', (e) => log(id, 'input', e.target.value));
+        el.addEventListener('change', (e) => log(id, 'change', e.target.value));
+    }
+
+    // Selects
+    for (const id of ['select-default', 'select-preselected']) {
+        document.getElementById(id)?.addEventListener('change', (e) => log(id, 'change', e.target.value));
+    }
+
+    // MultiSelects
+    for (const id of ['multi-default', 'multi-preselected']) {
+        document.getElementById(id)?.addEventListener('change', (e) => log(id, 'change', [...e.target.value]));
+    }
+
+    // TabBar
+    document.getElementById('tab-bar')?.addEventListener('tab-change', (e) => {
+        log('tab-bar', 'tab-change', e.detail.tab.textContent.trim());
+    });
+
+    // Toggles
+    for (const id of ['toggle-default', 'toggle-checked', 'toggle-labelled']) {
+        document.getElementById(id)?.addEventListener('change', (e) => log(id, 'change', e.target.checked));
+    }
+
+    // ColorPickers
+    for (const id of ['picker-default', 'picker-red', 'picker-named', 'picker-short']) {
+        document.getElementById(id)?.addEventListener('input', (e) => {
+            log(id, 'input', { color: e.target.color, opacity: e.target.opacity.toFixed(2), hexa: e.target.hexa });
+        });
+        document.getElementById(id)?.addEventListener('change', (e) => {
+            log(id, 'change', { color: e.target.color, opacity: e.target.opacity.toFixed(2), hexa: e.target.hexa });
+        });
+    }
+</script>
+
+</body>
+</html>
