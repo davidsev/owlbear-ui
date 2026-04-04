@@ -2,6 +2,9 @@
   "name": "@davidsev/owlbear-ui",
   "version": "0.1.2",
   "type": "module",
+  "repository": {
+    "url": "https://github.com/davidsev/owlbear-ui"
+  },
   "sideEffects": [
     "dist/index.js",
     "dist/color-picker.js",
