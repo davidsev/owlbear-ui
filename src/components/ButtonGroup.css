@@ -1,0 +1,18 @@
+:host {
+  display: inline-flex;
+  gap: 0.1875em;
+  padding: 0.1875em;
+  border: 1px solid rgba(var(--text-rgb), 0.2);
+  border-radius: 0.75em;
+  background: rgba(var(--text-rgb), 0.04);
+  box-sizing: border-box;
+}
+
+::slotted(obui-button-group-item) {
+  flex: 1 1 auto;
+}
+
+:host([disabled]) {
+  opacity: 0.5;
+  pointer-events: none;
+}

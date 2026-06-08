@@ -42,6 +42,9 @@ import '@davidsev/owlbear-ui';
 | `<obui-tab-button>` | Individual tab that shows/hides a target element |
 | `<obui-help-tooltip>` | "?" button that opens a modal dialog |
 | `<obui-toggle>` | Toggle switch with checked/disabled states |
+| `<obui-slider>` | Range slider with filled track, circular thumb, and optional ticks |
+| `<obui-button-group>` | Segmented control managing `<obui-button-group-item>` children |
+| `<obui-button-group-item>` | Individual mutually-exclusive segment (text and/or icon) |
 
 The color picker is a separate import to keep `vanilla-colorful` opt-in:
 

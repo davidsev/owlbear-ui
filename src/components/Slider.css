@@ -1,0 +1,129 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.slider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 1em;
+}
+
+/* Visible track: theme-coloured fill to the left of the thumb, muted to the
+   right. Inset by half a thumb so the fill aligns with the thumb centre. */
+.track {
+  position: absolute;
+  left: 0.5em;
+  right: 0.5em;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 0.25em;
+  border-radius: 0.125em;
+  background: linear-gradient(
+    to right,
+    var(--theme-color) var(--pct, 0%),
+    rgba(var(--text-rgb), 0.25) var(--pct, 0%)
+  );
+  pointer-events: none;
+}
+
+/* Span the track exactly (same 0.5em inset as .track). space-evenly then divides
+   that span into (ticks + 1) equal segments, so e.g. 3 ticks mark the quarter
+   points. Ticks are decorative dividers, independent of the thumb position. */
+.ticks {
+  position: absolute;
+  left: 0.5em;
+  right: 0.5em;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-evenly;
+  pointer-events: none;
+}
+
+.tick {
+  width: 0.1875em;
+  height: 0.1875em;
+  border-radius: 50%;
+  background: rgba(var(--text-rgb), 0.45);
+}
+
+/* The native range input sits on top with a transparent track, so the custom
+   track and ticks show through and only its thumb is visible. */
+input[type="range"] {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 1em;
+  margin: 0;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 0.25em;
+  background: transparent;
+}
+
+input[type="range"]::-moz-range-track {
+  height: 0.25em;
+  background: transparent;
+}
+
+input[type="range"]::-moz-range-progress {
+  background: transparent;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1em;
+  height: 1em;
+  margin-top: calc((0.25em - 1em) / 2);
+  border: none;
+  border-radius: 50%;
+  background: var(--theme-color);
+  transition: box-shadow 0.15s ease;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 1em;
+  height: 1em;
+  border: none;
+  border-radius: 50%;
+  background: var(--theme-color);
+  transition: box-shadow 0.15s ease;
+}
+
+input[type="range"]:focus {
+  outline: none;
+}
+
+/* Firefox draws its own dotted ring on range inputs that outline:none doesn't clear. */
+input[type="range"]::-moz-focus-outer {
+  border: 0;
+}
+
+input[type="range"]:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 0.25em rgba(var(--theme-rgb), 0.4);
+}
+
+input[type="range"]:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 0.25em rgba(var(--theme-rgb), 0.4);
+}
+
+/* box-shadow is stripped in forced-colors mode; restore a real focus outline. */
+@media (forced-colors: active) {
+  input[type="range"]:focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+}
+
+:host([disabled]) .slider {
+  opacity: 0.5;
+  pointer-events: none;
+}

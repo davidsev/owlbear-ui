@@ -1,0 +1,53 @@
+:host {
+  display: inline-flex;
+}
+
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375em;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-radius: 0.7em;
+  color: var(--text-secondary-color);
+  font-family: inherit;
+  font-weight: 500;
+  font-size: 0.875em;
+  line-height: 1.5;
+  padding: 0.375em 0.75em 0.125em 0.75em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+button:hover {
+  color: var(--text-color);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--theme-color);
+  outline-offset: 2px;
+}
+
+:host([selected]) button {
+  background: rgba(var(--text-rgb), 0.12);
+  color: var(--theme-color);
+}
+
+:host([disabled]) button {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* background-color and color are flattened to system colours in forced-colors
+   mode, so the selected segment would look identical to the rest; restore a
+   non-colour affordance. Inset outline so it reads distinctly from the focus
+   ring, which sits outside the button. */
+@media (forced-colors: active) {
+  :host([selected]) button {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+}

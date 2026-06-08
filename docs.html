@@ -243,6 +243,8 @@
         <li><a href="#tabs">obui-tab-bar + obui-tab-button</a></li>
         <li><a href="#help-tooltip">obui-help-tooltip</a></li>
         <li><a href="#toggle">obui-toggle</a></li>
+        <li><a href="#slider">obui-slider</a></li>
+        <li><a href="#button-group">obui-button-group + obui-button-group-item</a></li>
         <li><a href="#color-picker">obui-color-picker</a></li>
     </ul>
 </nav>
@@ -728,6 +730,147 @@ toggle.checked = true;
 </table>
 
 <!-- ================================================================ -->
+<h2 id="slider">&lt;obui-slider&gt;</h2>
+
+<p>A range slider with a theme-coloured filled track and a circular thumb, styled to match Owlbear Rodeo's UI. Built on a native <code>&lt;input type="range"&gt;</code>, so keyboard (arrows, Home/End, Page Up/Down), touch and screen-reader support come for free. Optional tick marks via the <code>ticks</code> property — <code>n</code> ticks divide the track into <code>n + 1</code> equal segments, so <code>ticks="3"</code> marks the quarter points.</p>
+
+<div class="demo">
+    <div class="demo-grid">
+        <div>
+            <div style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 0.25rem;">Default (0–100)</div>
+            <obui-slider id="doc-slider" value="50"></obui-slider>
+        </div>
+        <div>
+            <div style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 0.25rem;">Stepped, 3 ticks (quarters)</div>
+            <obui-slider min="0" max="20" step="5" value="10" ticks="3"></obui-slider>
+        </div>
+        <div>
+            <div style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 0.25rem;">Continuous (0–1)</div>
+            <obui-slider min="0" max="1" step="0.01" value="0.5"></obui-slider>
+        </div>
+        <div>
+            <div style="font-size: 0.75rem; opacity: 0.6; margin-bottom: 0.25rem;">Disabled</div>
+            <obui-slider value="30" disabled></obui-slider>
+        </div>
+    </div>
+</div>
+
+<pre><code class="language-html">&lt;obui-slider min="0" max="100" value="50"&gt;&lt;/obui-slider&gt;
+&lt;obui-slider min="0" max="20" step="5" value="10" ticks="3"&gt;&lt;/obui-slider&gt;
+
+&lt;script&gt;
+const slider = document.querySelector('obui-slider');
+
+// Fires continuously while dragging or on each keyboard step:
+slider.addEventListener('input', () =&gt; console.log(slider.value));
+
+// Fires once when the value is committed (pointer release / keyboard):
+slider.addEventListener('change', () =&gt; console.log('committed:', slider.value));
+&lt;/script&gt;</code></pre>
+
+<h3>Properties</h3>
+<table>
+    <tr><th>Property</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr>
+    <tr><td><code>value</code></td><td><code>value</code></td><td><code>number</code></td><td><code>0</code></td><td>Current value.</td></tr>
+    <tr><td><code>min</code></td><td><code>min</code></td><td><code>number</code></td><td><code>0</code></td><td>Minimum value.</td></tr>
+    <tr><td><code>max</code></td><td><code>max</code></td><td><code>number</code></td><td><code>100</code></td><td>Maximum value.</td></tr>
+    <tr><td><code>step</code></td><td><code>step</code></td><td><code>number</code></td><td><code>1</code></td><td>Step increment.</td></tr>
+    <tr><td><code>ticks</code></td><td><code>ticks</code></td><td><code>number</code></td><td><code>0</code></td><td>Number of decorative tick marks (0 = none). Divides the track into <code>ticks + 1</code> equal segments.</td></tr>
+    <tr><td><code>disabled</code></td><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Reduces opacity and disables interaction.</td></tr>
+    <tr><td><code>ariaLabel</code></td><td><code>aria-label</code></td><td><code>string | null</code></td><td><code>null</code></td><td>Accessible label passed through to the inner range input.</td></tr>
+</table>
+
+<h3>Events</h3>
+<table>
+    <tr><th>Event</th><th>Detail</th><th>Description</th></tr>
+    <tr><td><code>input</code></td><td>none</td><td>Fired continuously while dragging or on each keyboard step. Read <code>.value</code>.</td></tr>
+    <tr><td><code>change</code></td><td>none</td><td>Fired once when the value is committed (pointer release or keyboard).</td></tr>
+</table>
+
+<h3>CSS Parts</h3>
+<table>
+    <tr><th>Part</th><th>Description</th></tr>
+    <tr><td><code>input</code></td><td>The inner <code>&lt;input type="range"&gt;</code> element.</td></tr>
+</table>
+
+<!-- ================================================================ -->
+<h2 id="button-group">&lt;obui-button-group&gt; + &lt;obui-button-group-item&gt;</h2>
+
+<p>A segmented control — a group of mutually-exclusive buttons. Exactly one item is selected; the selected value lives on the group's <code>value</code> property. Each <code>&lt;obui-button-group-item&gt;</code> carries a <code>value</code> and can contain text, an icon, or both. Follows the <a href="https://www.w3.org/WAI/ARIA/apg/patterns/radio/">WAI-ARIA radio group pattern</a> with <code>role="radiogroup"</code>, <code>role="radio"</code>, roving <code>tabindex</code>, and arrow-key navigation.</p>
+
+<div class="demo">
+    <div class="demo-row">
+        <obui-button-group id="doc-group-theme" value="dark" aria-label="Color theme">
+            <obui-button-group-item value="dark">&#9789; Dark</obui-button-group-item>
+            <obui-button-group-item value="light">&#9728; Light</obui-button-group-item>
+        </obui-button-group>
+        <obui-button-group id="doc-group-border" value="circle" aria-label="Border style">
+            <obui-button-group-item value="outline">Outline</obui-button-group-item>
+            <obui-button-group-item value="squircle">Squircle</obui-button-group-item>
+            <obui-button-group-item value="circle">Circle</obui-button-group-item>
+        </obui-button-group>
+    </div>
+</div>
+
+<pre><code class="language-html">&lt;obui-button-group value="circle" aria-label="Border style"&gt;
+    &lt;obui-button-group-item value="outline"&gt;Outline&lt;/obui-button-group-item&gt;
+    &lt;obui-button-group-item value="squircle"&gt;Squircle&lt;/obui-button-group-item&gt;
+    &lt;obui-button-group-item value="circle"&gt;Circle&lt;/obui-button-group-item&gt;
+&lt;/obui-button-group&gt;
+
+&lt;script&gt;
+const group = document.querySelector('obui-button-group');
+group.addEventListener('change', () =&gt; console.log(group.value));
+
+// Programmatic selection (does NOT fire change):
+group.value = 'squircle';
+&lt;/script&gt;</code></pre>
+
+<h3>&lt;obui-button-group&gt; API</h3>
+<table>
+    <tr><th>Property</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr>
+    <tr><td><code>value</code></td><td><code>value</code></td><td><code>string</code></td><td><code>""</code></td><td>The selected item's value. Set programmatically to change the selection (does not fire <code>change</code>).</td></tr>
+    <tr><td><code>disabled</code></td><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Disables the whole group.</td></tr>
+    <tr><td><code>ariaLabel</code></td><td><code>aria-label</code></td><td><code>string | null</code></td><td><code>null</code></td><td>Accessible label for the radio group.</td></tr>
+</table>
+
+<table>
+    <tr><th>Event</th><th>Detail</th><th>Description</th></tr>
+    <tr><td><code>change</code></td><td>none</td><td>Fired when the selection changes via user interaction (click or keyboard). Read <code>.value</code>. <strong>Not</strong> fired on programmatic <code>value</code> changes.</td></tr>
+</table>
+
+<h3>&lt;obui-button-group-item&gt; API</h3>
+<table>
+    <tr><th>Property</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr>
+    <tr><td><code>value</code></td><td><code>value</code></td><td><code>string</code></td><td><code>""</code></td><td>The item's value, surfaced on the group when selected.</td></tr>
+    <tr><td><code>selected</code></td><td><code>selected</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Whether this item is selected. Managed by the parent group — reflected for styling via <code>:host([selected])</code>.</td></tr>
+    <tr><td><code>disabled</code></td><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Disables this item only; it is skipped by keyboard navigation and ignores clicks.</td></tr>
+    <tr><td><code>ariaLabel</code></td><td><code>aria-label</code></td><td><code>string | null</code></td><td><code>null</code></td><td>Accessible name for the radio. <strong>Required for icon-only segments</strong> (text segments take their name from the slotted text).</td></tr>
+</table>
+
+<p><strong>Note:</strong> the group manages each item's <code>selected</code> state and roving <code>tabindex</code>, re-syncing when items are added or removed (or when the group's own <code>value</code>/<code>disabled</code> changes). Change an item's <code>value</code> or <code>disabled</code> by re-rendering the items rather than mutating a live item in place — an in-place mutation isn't observed by the group, so the selection and tab order can go stale.</p>
+
+<h3>Slots</h3>
+<table>
+    <tr><th>Slot</th><th>Description</th></tr>
+    <tr><td>(default)</td><td>Item content — text, icon, or both (on <code>&lt;obui-button-group-item&gt;</code>).</td></tr>
+</table>
+
+<h3>CSS Parts</h3>
+<table>
+    <tr><th>Part</th><th>Description</th></tr>
+    <tr><td><code>button</code></td><td>The inner <code>&lt;button&gt;</code> element (on <code>&lt;obui-button-group-item&gt;</code>).</td></tr>
+</table>
+
+<h3>Keyboard</h3>
+<table>
+    <tr><th>Key</th><th>Action</th></tr>
+    <tr><td>Arrow Right / Down</td><td>Select next item (wraps, skips disabled)</td></tr>
+    <tr><td>Arrow Left / Up</td><td>Select previous item (wraps, skips disabled)</td></tr>
+    <tr><td>Home / End</td><td>Select first / last enabled item</td></tr>
+</table>
+
+<!-- ================================================================ -->
 <h2 id="color-picker">&lt;obui-color-picker&gt;</h2>
 
 <p>A color swatch button that opens a hex+alpha color picker in a modal dialog. Requires <code>vanilla-colorful</code> as an optional peer dependency. The swatch button has <code>aria-haspopup="dialog"</code>. Focus moves into the dialog on open and returns to the swatch on close.</p>
@@ -810,6 +953,9 @@ picker.addEventListener('change', () =&gt; {
         ObUIMultiSelect,
         ObUIHelpTooltip,
         ObUIToggle,
+        ObUISlider,
+        ObUIButtonGroup,
+        ObUIButtonGroupItem,
     } from './dist/index.js';
     import { ObUIColorPicker } from './dist/color-picker.js';
 
@@ -893,6 +1039,17 @@ picker.addEventListener('change', () =&gt; {
     // Toggles
     for (const el of document.querySelectorAll('obui-toggle')) {
         el.addEventListener('change', (e) => log('toggle', 'change', e.target.checked));
+    }
+
+    // Sliders
+    for (const el of document.querySelectorAll('obui-slider')) {
+        el.addEventListener('input', (e) => log('slider', 'input', e.target.value));
+        el.addEventListener('change', (e) => log('slider', 'change', e.target.value));
+    }
+
+    // ButtonGroups
+    for (const id of ['doc-group-theme', 'doc-group-border']) {
+        document.getElementById(id)?.addEventListener('change', (e) => log(id, 'change', e.target.value));
     }
 
     // ColorPickers

@@ -219,6 +219,66 @@
     </div>
 </div>
 
+<!-- ===== Slider ===== -->
+<h2>obui-slider</h2>
+<div class="grid">
+    <div>
+        <div class="label">Default (0–100, value 50)</div>
+        <obui-slider id="slider-default" value="50"></obui-slider>
+    </div>
+    <div>
+        <div class="label">With ticks (0–20, step 5, 3 ticks → quarters)</div>
+        <obui-slider id="slider-ticks" min="0" max="20" step="5" value="10" ticks="3"></obui-slider>
+    </div>
+    <div>
+        <div class="label">Continuous (alpha 0–1, step 0.01)</div>
+        <obui-slider id="slider-alpha" min="0" max="1" step="0.01" value="0.5"></obui-slider>
+    </div>
+    <div>
+        <div class="label">Disabled</div>
+        <obui-slider id="slider-disabled" value="30" disabled></obui-slider>
+    </div>
+    <div>
+        <div class="label">With aria-label</div>
+        <obui-slider id="slider-labelled" value="75" aria-label="Glow alpha"></obui-slider>
+    </div>
+</div>
+
+<!-- ===== ButtonGroup ===== -->
+<h2>obui-button-group + obui-button-group-item</h2>
+<div class="row">
+    <div>
+        <div class="label">Theme switcher (icon + label)</div>
+        <obui-button-group id="group-theme" value="dark" aria-label="Color theme">
+            <obui-button-group-item value="dark">&#9789; Dark</obui-button-group-item>
+            <obui-button-group-item value="light">&#9728; Light</obui-button-group-item>
+        </obui-button-group>
+    </div>
+    <div>
+        <div class="label">Border style (3 options)</div>
+        <obui-button-group id="group-border" value="circle" aria-label="Border style">
+            <obui-button-group-item value="outline">Outline</obui-button-group-item>
+            <obui-button-group-item value="squircle">Squircle</obui-button-group-item>
+            <obui-button-group-item value="circle">Circle</obui-button-group-item>
+        </obui-button-group>
+    </div>
+    <div>
+        <div class="label">With a disabled item</div>
+        <obui-button-group id="group-disabled-item" value="a" aria-label="With disabled option">
+            <obui-button-group-item value="a">One</obui-button-group-item>
+            <obui-button-group-item value="b" disabled>Two</obui-button-group-item>
+            <obui-button-group-item value="c">Three</obui-button-group-item>
+        </obui-button-group>
+    </div>
+    <div>
+        <div class="label">Whole group disabled</div>
+        <obui-button-group id="group-disabled" value="x" disabled aria-label="Disabled group">
+            <obui-button-group-item value="x">Left</obui-button-group-item>
+            <obui-button-group-item value="y">Right</obui-button-group-item>
+        </obui-button-group>
+    </div>
+</div>
+
 <!-- ===== ColorPicker ===== -->
 <h2>obui-color-picker</h2>
 <div class="row">
@@ -251,6 +311,9 @@
         ObUIMultiSelect,
         ObUIHelpTooltip,
         ObUIToggle,
+        ObUISlider,
+        ObUIButtonGroup,
+        ObUIButtonGroupItem,
     } from './dist/index.js';
     import { ObUIColorPicker } from './dist/color-picker.js';
 
@@ -337,6 +400,19 @@
     // Toggles
     for (const id of ['toggle-default', 'toggle-checked', 'toggle-labelled']) {
         document.getElementById(id)?.addEventListener('change', (e) => log(id, 'change', e.target.checked));
+    }
+
+    // Sliders
+    for (const id of ['slider-default', 'slider-ticks', 'slider-alpha', 'slider-labelled']) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        el.addEventListener('input', (e) => log(id, 'input', e.target.value));
+        el.addEventListener('change', (e) => log(id, 'change', e.target.value));
+    }
+
+    // ButtonGroups
+    for (const id of ['group-theme', 'group-border', 'group-disabled-item']) {
+        document.getElementById(id)?.addEventListener('change', (e) => log(id, 'change', e.target.value));
     }
 
     // ColorPickers

@@ -8,13 +8,13 @@ button {
   gap: 0.375em;
   background: transparent;
   border: 1px solid rgba(var(--text-rgb), 0.25);
-  border-radius: 0.375em;
+  border-radius: 0.5em;
   color: var(--text-color);
   font-family: inherit;
   font-weight: 500;
   font-size: 0.875em;
   line-height: 1.5;
-  padding: 0.25em 0.5em;
+  padding: 0.25em 0.5em 0.125em 0.5em;
   cursor: pointer;
   transition: border-color 0.15s ease, color 0.15s ease;
 }

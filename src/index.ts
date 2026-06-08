@@ -14,3 +14,6 @@ export { ObUISelect } from './components/Select';
 export { ObUIMultiSelect } from './components/MultiSelect';
 export { ObUIHelpTooltip } from './components/HelpTooltip';
 export { ObUIToggle } from './components/Toggle';
+export { ObUISlider } from './components/Slider';
+export { ObUIButtonGroup } from './components/ButtonGroup';
+export { ObUIButtonGroupItem } from './components/ButtonGroupItem';
