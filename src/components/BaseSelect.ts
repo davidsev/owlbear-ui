@@ -1,5 +1,5 @@
-import { html, nothing } from 'lit';
 import type { TemplateResult } from 'lit';
+import { html, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { ifDefined } from 'lit/directives/if-defined.js';

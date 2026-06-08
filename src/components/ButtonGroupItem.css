@@ -19,7 +19,9 @@ button {
   padding: 0.375em 0.75em 0.125em 0.75em;
   cursor: pointer;
   white-space: nowrap;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
 button:hover {

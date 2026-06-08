@@ -16,7 +16,9 @@ button {
   line-height: 1.5;
   padding: 0.25em 0.5em 0.125em 0.5em;
   cursor: pointer;
-  transition: border-color 0.15s ease, color 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
 button:hover {

@@ -1,3 +1,4 @@
+// biome-ignore lint/suspicious/noTsIgnore: vanilla-colorful is an optional peer dependency
 // @ts-ignore - vanilla-colorful is an optional peer dependency
 import 'vanilla-colorful/hex-alpha-color-picker.js';
 import { html } from 'lit';
