@@ -32,7 +32,7 @@ button:focus-visible {
 }
 
 :host([selected]) button {
-  background: rgba(var(--text-rgb), 0.12);
+  background: rgba(var(--theme-rgb), 0.2);
   color: var(--theme-color);
 }
 

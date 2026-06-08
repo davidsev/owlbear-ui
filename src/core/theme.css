@@ -2,7 +2,7 @@
 
 :root[data-theme="light"] {
   --text-rgb: 0, 0, 0;
-  --theme-rgb: 187, 153, 255;
+  --theme-rgb: 153, 102, 255;
   --background-rgb: 229, 231, 235;
   --panel-rgb: 242, 243, 249;
 }

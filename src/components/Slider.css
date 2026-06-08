@@ -23,7 +23,7 @@
   background: linear-gradient(
     to right,
     var(--theme-color) var(--pct, 0%),
-    rgba(var(--text-rgb), 0.25) var(--pct, 0%)
+    rgba(var(--theme-rgb), 0.3) var(--pct, 0%)
   );
   pointer-events: none;
 }
