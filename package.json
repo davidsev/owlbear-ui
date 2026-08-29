@@ -44,7 +44,8 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "lit": "^3.0.0"
+    "lit": "^3.0.0",
+    "tslib": "^2.7.0"
   },
   "peerDependencies": {
     "@owlbear-rodeo/sdk": "^3.0.0",
@@ -71,7 +72,6 @@
     "postcss-nesting": "^14.0.0",
     "rollup": "^4.0.0",
     "rollup-plugin-serve": "^3.0.0",
-    "tslib": "^2.7.0",
     "typescript": "^6.0.0",
     "vanilla-colorful": "^0.7.2"
   },
