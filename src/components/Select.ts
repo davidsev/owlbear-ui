@@ -17,6 +17,32 @@ export class ObUISelect extends BaseSelect {
   @property({ type: String })
   accessor value = '';
 
+  /** The value at first connection, restored by `form.reset()`. */
+  private _defaultValue = '';
+  private _defaultValueCaptured = false;
+
+  protected override get _formValue(): string | null {
+    // A value that isn't one of the options reads as nothing selected
+    // everywhere else (display, validity) — don't submit it either.
+    return this._showPlaceholder ? null : this.value;
+  }
+
+  protected override _restoreDefaultValue(): void {
+    this.value = this._defaultValue;
+  }
+
+  // Captured here rather than in `firstUpdated()`: `formResetCallback()` can
+  // fire synchronously (e.g. `form.reset()` right after `form.appendChild()`)
+  // before Lit's first, async render — `connectedCallback()` is synchronous
+  // and runs before that's possible.
+  override connectedCallback(): void {
+    super.connectedCallback();
+    if (!this._defaultValueCaptured) {
+      this._defaultValueCaptured = true;
+      this._defaultValue = this.value;
+    }
+  }
+
   protected override get _displayText(): string {
     if (this.value && this.value in this.options) {
       return this.options[this.value];

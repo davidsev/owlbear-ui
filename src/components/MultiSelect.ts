@@ -20,8 +20,43 @@ export class ObUIMultiSelect extends BaseSelect {
   @property({ type: String })
   accessor placeholder = 'None';
 
+  /** The value at first connection, restored by `form.reset()`. */
+  private _defaultValue: string[] = [];
+  private _defaultValueCaptured = false;
+
+  /**
+   * One entry per selected key, as a `<select multiple>` submits. The entry
+   * names are ours to pick, so an unnamed control must submit nothing.
+   */
+  protected override get _formValue(): FormData | null {
+    // Keys that aren't options read as unselected everywhere else — skip them.
+    const keys = this.value.filter((key) => key in this.options);
+    if (!this.name || keys.length === 0) return null;
+    const data = new FormData();
+    for (const key of keys) {
+      data.append(this.name, key);
+    }
+    return data;
+  }
+
+  protected override _restoreDefaultValue(): void {
+    this.value = [...this._defaultValue];
+  }
+
+  // Captured here rather than in `firstUpdated()`: `formResetCallback()` can
+  // fire synchronously (e.g. `form.reset()` right after `form.appendChild()`)
+  // before Lit's first, async render — `connectedCallback()` is synchronous
+  // and runs before that's possible.
+  override connectedCallback(): void {
+    super.connectedCallback();
+    if (!this._defaultValueCaptured) {
+      this._defaultValueCaptured = true;
+      this._defaultValue = [...this.value];
+    }
+  }
+
   protected override get _displayText(): string {
-    if (this.value.length > 0) {
+    if (!this._showPlaceholder) {
       return this.value
         .filter((v) => v in this.options)
         .map((v) => this.options[v])
@@ -31,7 +66,9 @@ export class ObUIMultiSelect extends BaseSelect {
   }
 
   protected override get _showPlaceholder(): boolean {
-    return this.value.length === 0;
+    // A value made up entirely of unknown keys reads as unselected too —
+    // must agree with `_formValue` and `_displayText` above.
+    return !this.value.some((key) => key in this.options);
   }
 
   protected override _onSelectKey(key: string): void {

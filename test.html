@@ -152,6 +152,10 @@
         <div class="label">Disabled</div>
         <obui-select id="select-disabled" disabled></obui-select>
     </div>
+    <div>
+        <div class="label">Required (empty = invalid)</div>
+        <obui-select id="select-required" required placeholder="Choose a shape..."></obui-select>
+    </div>
 </div>
 
 <!-- ===== MultiSelect ===== -->
@@ -169,7 +173,73 @@
         <div class="label">Disabled</div>
         <obui-multi-select id="multi-disabled" disabled></obui-multi-select>
     </div>
+    <div>
+        <div class="label">Required (empty = invalid)</div>
+        <obui-multi-select id="multi-required" required placeholder="Pick colours..."></obui-multi-select>
+    </div>
 </div>
+
+<!-- ===== Validity ===== -->
+<h2>Validity (ElementInternals)</h2>
+<p>All the fields below are required. <code>checkValidity()</code>/<code>reportValidity()</code> run on the host
+    elements themselves — no shadow-root access needed. The disabled one is barred from constraint validation,
+    so it always reports valid, just like a bare <code>&lt;input required disabled&gt;</code>.</p>
+<form id="validity-form" class="row" novalidate>
+    <div>
+        <div class="label">Name (required)</div>
+        <obui-input id="validity-input" required placeholder="Name"></obui-input>
+    </div>
+    <div>
+        <div class="label">Shape (required)</div>
+        <obui-select id="validity-select" required placeholder="Choose a shape..."></obui-select>
+    </div>
+    <div>
+        <div class="label">Colours (required)</div>
+        <obui-multi-select id="validity-multi" required placeholder="Pick colours..."></obui-multi-select>
+    </div>
+    <div>
+        <div class="label">Nickname (required, disabled)</div>
+        <obui-input id="validity-disabled" required disabled placeholder="Nickname"></obui-input>
+    </div>
+    <div>
+        <button type="submit" id="validity-check">Check validity</button>
+        <div class="label" id="validity-result"></div>
+    </div>
+</form>
+
+<!-- ===== Form submission ===== -->
+<h2>Form submission (setFormValue / reset)</h2>
+<p>A real <code>&lt;form&gt;</code> with no <code>novalidate</code>: Submit is blocked (with a native bubble) until
+    Name is filled in, the values arrive in <code>FormData</code> under their <code>name</code>, and Reset restores
+    the values authored in the markup. The fieldset disables its control without touching its <code>disabled</code>
+    property, and disabled controls submit nothing.</p>
+<form id="submit-form" class="row">
+    <div>
+        <div class="label">Name (required)</div>
+        <obui-input name="who" required placeholder="Name"></obui-input>
+    </div>
+    <div>
+        <div class="label">Shape</div>
+        <obui-select name="shape" id="submit-select" value="circle"></obui-select>
+    </div>
+    <div>
+        <div class="label">Colours (multiple entries)</div>
+        <obui-multi-select name="colours" id="submit-multi" value='["red"]'></obui-multi-select>
+    </div>
+    <div>
+        <div class="label">Level</div>
+        <obui-slider name="level" value="40" style="width: 120px"></obui-slider>
+    </div>
+    <fieldset disabled>
+        <div class="label">In a disabled fieldset</div>
+        <obui-input name="hidden-by-fieldset" value="not submitted"></obui-input>
+    </fieldset>
+    <div>
+        <button type="submit">Submit</button>
+        <button type="reset">Reset</button>
+        <div class="label" id="submit-result"></div>
+    </div>
+</form>
 
 <!-- ===== TabBar + TabButton ===== -->
 <h2>obui-tab-bar + obui-tab-button</h2>
@@ -347,6 +417,9 @@
     selectDisabled.options = shapeOptions;
     selectDisabled.value = 'square';
 
+    document.getElementById('select-required').options = shapeOptions;
+    document.getElementById('validity-select').options = shapeOptions;
+
     // --- Set up MultiSelect options ---
     const colourOptions = { red: 'Red', green: 'Green', blue: 'Blue', yellow: 'Yellow', purple: 'Purple' };
 
@@ -359,6 +432,41 @@
     const multiDisabled = document.getElementById('multi-disabled');
     multiDisabled.options = colourOptions;
     multiDisabled.value = ['green'];
+
+    document.getElementById('multi-required').options = colourOptions;
+    document.getElementById('validity-multi').options = colourOptions;
+
+    // --- Form submission demo: setFormValue()/formResetCallback() ---
+    document.getElementById('submit-select').options = shapeOptions;
+    document.getElementById('submit-multi').options = colourOptions;
+    document.getElementById('submit-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const entries = [...new FormData(e.target).entries()];
+        document.getElementById('submit-result').textContent = entries
+            .map(([k, v]) => `${k}=${v}`)
+            .join(', ');
+        log('submit-form', 'submit', entries);
+    });
+    document.getElementById('submit-form').addEventListener('reset', () => {
+        document.getElementById('submit-result').textContent = '';
+        log('submit-form', 'reset');
+    });
+
+    // --- Validity demo: checkValidity()/reportValidity() on the host elements ---
+    document.getElementById('validity-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const fields = [
+            document.getElementById('validity-input'),
+            document.getElementById('validity-select'),
+            document.getElementById('validity-multi'),
+            // Disabled: barred from constraint validation, so always valid —
+            // same as a bare <input required disabled>.
+            document.getElementById('validity-disabled'),
+        ];
+        const allValid = fields.map((el) => el.reportValidity()).every(Boolean);
+        document.getElementById('validity-result').textContent = allValid ? 'All valid ✓' : 'Invalid ✗';
+        log('validity-form', 'submit', { allValid });
+    });
 
     // --- Wire up all events to console ---
     function log(name, type, detail) {

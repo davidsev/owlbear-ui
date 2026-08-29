@@ -66,4 +66,35 @@ describe('ObUIMultiSelect', () => {
     expect(cbs[1].checked).to.be.true; // g
     expect(cbs[2].checked).to.be.false; // b
   });
+
+  it('exposes computed validity, without shadow DOM access', async () => {
+    const el = await fixture<ObUIMultiSelect>(
+      html`<obui-multi-select required></obui-multi-select>`,
+    );
+    el.options = OPTIONS;
+    await el.updateComplete;
+
+    expect(el.validity.valueMissing).to.be.true;
+    expect(el.checkValidity()).to.be.false;
+
+    el.value = ['r'];
+    await el.updateComplete;
+
+    expect(el.validity.valueMissing).to.be.false;
+    expect(el.checkValidity()).to.be.true;
+  });
+
+  it('treats a value made up entirely of unknown keys as unselected', async () => {
+    const el = await fixture<ObUIMultiSelect>(
+      html`<obui-multi-select required></obui-multi-select>`,
+    );
+    el.options = OPTIONS;
+    el.value = ['gone'];
+    await el.updateComplete;
+
+    // Must agree with `_formValue`/`_displayText`, which already drop
+    // unknown keys — otherwise the field reports valid but submits nothing.
+    expect(el.validity.valueMissing).to.be.true;
+    expect(el.checkValidity()).to.be.false;
+  });
 });

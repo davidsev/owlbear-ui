@@ -63,4 +63,79 @@ describe('ObUIInput', () => {
     el.focus();
     expect(el.shadowRoot!.activeElement).to.equal(getInput(el));
   });
+
+  it('exposes validity mirrored from the inner input, without shadow DOM access', async () => {
+    const el = await fixture<ObUIInput>(
+      html`<obui-input required></obui-input>`,
+    );
+
+    expect(el.validity.valueMissing).to.be.true;
+    expect(el.checkValidity()).to.be.false;
+
+    el.value = 'x';
+    await el.updateComplete;
+
+    expect(el.validity.valueMissing).to.be.false;
+    expect(el.checkValidity()).to.be.true;
+  });
+
+  it('reflects validity synchronously, without awaiting updateComplete', async () => {
+    const el = await fixture<ObUIInput>(html`<obui-input></obui-input>`);
+
+    el.required = true;
+
+    expect(el.validity.valueMissing).to.be.true;
+    expect(el.checkValidity()).to.be.false;
+  });
+
+  it('matches a bare <input> when disabled: barred from constraint validation', async () => {
+    const el = await fixture<ObUIInput>(
+      html`<obui-input type="email" value="notanemail" disabled></obui-input>`,
+    );
+
+    // A disabled native input keeps its validity flags but is barred from
+    // validation: checkValidity() passes and the message is empty.
+    expect(el.validity.typeMismatch).to.be.true;
+    expect(el.willValidate).to.be.false;
+    expect(el.checkValidity()).to.be.true;
+    expect(el.validationMessage).to.equal('');
+
+    // ...and, like a bare <input required disabled>, no valueMissing.
+    el.type = 'text';
+    el.value = '';
+    el.required = true;
+    await el.updateComplete;
+
+    expect(el.validity.valueMissing).to.be.false;
+    expect(el.checkValidity()).to.be.true;
+  });
+
+  it('mirrors validity set programmatically after render', async () => {
+    const el = await fixture<ObUIInput>(
+      html`<obui-input type="email" value="notanemail"></obui-input>`,
+    );
+
+    expect(el.checkValidity()).to.be.false;
+
+    el.disabled = true;
+    await el.updateComplete;
+
+    expect(el.checkValidity()).to.be.true;
+    expect(el.validationMessage).to.equal('');
+  });
+
+  it('mirrors badInput without a value change', async () => {
+    const el = await fixture<ObUIInput>(
+      html`<obui-input type="number"></obui-input>`,
+    );
+    const input = getInput(el);
+
+    // Typing "abc" into a number field leaves input.value === '', so nothing
+    // on the host changes and no re-render is queued — validity must still
+    // follow the inner control.
+    input.value = 'abc';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+
+    expect(el.validity.badInput).to.equal(input.validity.badInput);
+  });
 });

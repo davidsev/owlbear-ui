@@ -86,4 +86,12 @@ describe('ObUISlider', () => {
     );
     expect(getInput(el).disabled).to.be.true;
   });
+
+  it('exposes validity mirrored from the inner input, without shadow DOM access', async () => {
+    const el = await fixture<ObUISlider>(
+      html`<obui-slider min="0" max="10" value="5"></obui-slider>`,
+    );
+    expect(el.validity.valid).to.be.true;
+    expect(el.checkValidity()).to.be.true;
+  });
 });

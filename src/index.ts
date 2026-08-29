@@ -15,4 +15,5 @@ export { ObUIToggle } from './components/Toggle';
 // Core
 export { BaseElement } from './core/BaseElement';
 export { baseCSS } from './core/baseCSS';
+export { FormElement } from './core/FormElement';
 export { ThemeManager } from './core/ThemeManager';

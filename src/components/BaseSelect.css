@@ -44,7 +44,7 @@
   display: block;
 }
 
-:host([disabled]) .select-trigger {
+:host(:disabled) .select-trigger {
   opacity: 0.5;
   pointer-events: none;
 }

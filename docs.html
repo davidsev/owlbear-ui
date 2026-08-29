@@ -236,6 +236,7 @@
         <li><a href="#installation">Installation</a></li>
         <li><a href="#theme-manager">ThemeManager</a></li>
         <li><a href="#base-element">BaseElement</a></li>
+        <li><a href="#form-element">FormElement</a></li>
         <li><a href="#button">obui-button</a></li>
         <li><a href="#input">obui-input</a></li>
         <li><a href="#select">obui-select</a></li>
@@ -345,6 +346,63 @@ class MyWidget extends BaseElement {
 </table>
 
 <!-- ================================================================ -->
+<h2 id="form-element">FormElement</h2>
+
+<p>Base class for owlbear-ui's form-control components (<code>&lt;obui-input&gt;</code>, <code>&lt;obui-select&gt;</code>, <code>&lt;obui-multi-select&gt;</code>, <code>&lt;obui-slider&gt;</code>). Extends <code>BaseElement</code> and attaches <code>ElementInternals</code>, so HTML constraint-validation state (e.g. from <code>required</code>) is exposed directly on the host element — callers never need to reach into the shadow root to find the underlying native control.</p>
+
+<pre><code class="language-javascript">import { FormElement } from '@davidsev/owlbear-ui';
+
+const input = document.querySelector('obui-input[required]');
+
+input.validity.valueMissing; // true if empty
+input.validationMessage;     // browser's default message, or your custom one
+input.checkValidity();       // true/false, fires 'invalid' if false
+input.reportValidity();      // like checkValidity(), but also shows the native validation bubble
+input.willValidate;          // false if barred from constraint validation
+input.form;                  // the associated &lt;form&gt;, or null</code></pre>
+
+<p>The constraint-validation API is synchronous — reading <code>validity</code> or calling <code>checkValidity()</code> flushes any pending render first, so <code>el.required = true; el.checkValidity()</code> sees the new state without awaiting <code>updateComplete</code>.</p>
+
+<p><code>disabled</code> mirrors a bare <code>&lt;input&gt;</code>: the element is barred from constraint validation, so <code>willValidate</code> is <code>false</code>, <code>checkValidity()</code> returns <code>true</code> and <code>validationMessage</code> is empty. An enclosing <code>&lt;fieldset disabled&gt;</code> does the same and also disables the control itself.</p>
+
+<p>These are form-associated custom elements, so they behave like native controls inside a <code>&lt;form&gt;</code>:</p>
+
+<ul>
+    <li>The value is submitted under <code>name</code> — unnamed and disabled controls submit nothing, as native ones do. <code>&lt;obui-multi-select&gt;</code> submits one entry per selection, like <code>&lt;select multiple&gt;</code>.</li>
+    <li>An invalid control <strong>blocks</strong> submission and shows the browser's validation bubble.</li>
+    <li>For the selects, a value that isn't one of <code>options</code> counts as nothing selected — for display, validity and submission alike.</li>
+    <li><code>form.reset()</code> restores the value the control was authored with — its <code>value</code> attribute, as with a native control's <code>defaultValue</code>. Assigning <code>.value</code> from JS later doesn't move that default.</li>
+</ul>
+
+<pre><code class="language-html">&lt;form&gt;
+    &lt;obui-input name="who" value="Ada" required&gt;&lt;/obui-input&gt;
+    &lt;obui-multi-select name="colours"&gt;&lt;/obui-multi-select&gt;
+    &lt;button type="submit"&gt;Save&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;script type="module"&gt;
+    form.addEventListener('submit', (e) =&gt; {
+        e.preventDefault();
+        [...new FormData(form)]; // [['who', 'Ada'], ['colours', 'red'], ['colours', 'blue']]
+    });
+&lt;/script&gt;</code></pre>
+
+<p>Browser state restoration (autofill, back/forward navigation) is not implemented — there is no <code>formStateRestoreCallback</code>.</p>
+
+<h3>API</h3>
+<table>
+    <tr><th>Member</th><th>Description</th></tr>
+    <tr><td><code>validity</code></td><td>Read-only <code>ValidityState</code> of the host element.</td></tr>
+    <tr><td><code>validationMessage</code></td><td>Read-only. The validation message, if any. Empty when the element is valid or barred from validation (e.g. <code>disabled</code>).</td></tr>
+    <tr><td><code>willValidate</code></td><td>Read-only <code>boolean</code>. Whether the element is a candidate for constraint validation.</td></tr>
+    <tr><td><code>name</code></td><td>Name the value is submitted under. Backed by the <code>name</code> attribute, as on a native control.</td></tr>
+    <tr><td><code>disabled</code></td><td><code>boolean</code>, reflected. Also set by an ancestor <code>&lt;fieldset disabled&gt;</code>, which disables the control without touching this property.</td></tr>
+    <tr><td><code>form</code></td><td>Read-only. The associated <code>&lt;form&gt;</code>, or <code>null</code>.</td></tr>
+    <tr><td><code>checkValidity()</code></td><td>Returns <code>true</code>/<code>false</code>; fires a cancellable <code>invalid</code> event if invalid.</td></tr>
+    <tr><td><code>reportValidity()</code></td><td>Like <code>checkValidity()</code>, but also shows the browser's native validation bubble on the element if invalid.</td></tr>
+</table>
+
+<!-- ================================================================ -->
 <h2 id="button">&lt;obui-button&gt;</h2>
 
 <p>A styled button with a hover underline effect. Content is placed in the default slot.</p>
@@ -413,8 +471,9 @@ class MyWidget extends BaseElement {
     <tr><td><code>type</code></td><td><code>type</code></td><td><code>string</code></td><td><code>"text"</code></td><td>Input type (text, number, password, etc.)</td></tr>
     <tr><td><code>value</code></td><td><code>value</code></td><td><code>string</code></td><td><code>""</code></td><td>Current value.</td></tr>
     <tr><td><code>placeholder</code></td><td><code>placeholder</code></td><td><code>string</code></td><td><code>""</code></td><td>Placeholder text.</td></tr>
+    <tr><td><code>name</code></td><td><code>name</code></td><td><code>string</code></td><td><code>""</code></td><td>Name the value is submitted under in a native <code>&lt;form&gt;</code>. See <a href="#form-element">FormElement</a>.</td></tr>
     <tr><td><code>disabled</code></td><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Disables the input.</td></tr>
-    <tr><td><code>required</code></td><td><code>required</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Marks as required (shows red border when empty).</td></tr>
+    <tr><td><code>required</code></td><td><code>required</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Marks as required (shows red border when empty). See <a href="#form-element">FormElement</a> for <code>validity</code>/<code>checkValidity()</code>.</td></tr>
     <tr><td><code>min</code></td><td><code>min</code></td><td><code>string</code></td><td>—</td><td>Minimum value (for number inputs).</td></tr>
     <tr><td><code>max</code></td><td><code>max</code></td><td><code>string</code></td><td>—</td><td>Maximum value (for number inputs).</td></tr>
     <tr><td><code>step</code></td><td><code>step</code></td><td><code>string</code></td><td>—</td><td>Step increment (for number inputs).</td></tr>
@@ -486,7 +545,9 @@ select.addEventListener('change', (e) =&gt; {
     <tr><td><code>options</code></td><td>—</td><td><code>Record&lt;string, string&gt;</code></td><td><code>{}</code></td><td>Key-value pairs. Keys are the values, values are the display labels. Set via JS property.</td></tr>
     <tr><td><code>value</code></td><td><code>value</code></td><td><code>string</code></td><td><code>""</code></td><td>Currently selected key.</td></tr>
     <tr><td><code>placeholder</code></td><td><code>placeholder</code></td><td><code>string</code></td><td><code>""</code></td><td>Text shown when no value is selected.</td></tr>
+    <tr><td><code>name</code></td><td><code>name</code></td><td><code>string</code></td><td><code>""</code></td><td>Name the value is submitted under in a native <code>&lt;form&gt;</code>. See <a href="#form-element">FormElement</a>.</td></tr>
     <tr><td><code>disabled</code></td><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>When true, prevents interaction and applies disabled styling.</td></tr>
+    <tr><td><code>required</code></td><td><code>required</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Invalid while no option is selected. See <a href="#form-element">FormElement</a> for <code>validity</code>/<code>checkValidity()</code>.</td></tr>
     <tr><td><code>ariaLabel</code></td><td><code>aria-label</code></td><td><code>string | null</code></td><td><code>null</code></td><td>Accessible label for the combobox. Applied to the listbox element.</td></tr>
 </table>
 
@@ -541,9 +602,11 @@ multi.addEventListener('change', (e) =&gt; {
 <table>
     <tr><th>Property</th><th>Attribute</th><th>Type</th><th>Default</th><th>Description</th></tr>
     <tr><td><code>options</code></td><td>—</td><td><code>Record&lt;string, string&gt;</code></td><td><code>{}</code></td><td>Key-value pairs. Set via JS property.</td></tr>
-    <tr><td><code>value</code></td><td>—</td><td><code>string[]</code></td><td><code>[]</code></td><td>Array of selected keys. Set via JS property.</td></tr>
+    <tr><td><code>value</code></td><td><code>value</code></td><td><code>string[]</code></td><td><code>[]</code></td><td>Array of selected keys. Set via JS property, or as a JSON array in the attribute (<code>value='["red"]'</code>).</td></tr>
     <tr><td><code>placeholder</code></td><td><code>placeholder</code></td><td><code>string</code></td><td><code>"None"</code></td><td>Text shown when nothing is selected.</td></tr>
+    <tr><td><code>name</code></td><td><code>name</code></td><td><code>string</code></td><td><code>""</code></td><td>Name the value is submitted under in a native <code>&lt;form&gt;</code>. See <a href="#form-element">FormElement</a>.</td></tr>
     <tr><td><code>disabled</code></td><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>When true, prevents interaction and applies disabled styling.</td></tr>
+    <tr><td><code>required</code></td><td><code>required</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Invalid while no option is selected. See <a href="#form-element">FormElement</a> for <code>validity</code>/<code>checkValidity()</code>.</td></tr>
     <tr><td><code>ariaLabel</code></td><td><code>aria-label</code></td><td><code>string | null</code></td><td><code>null</code></td><td>Accessible label for the combobox. Applied to the listbox element.</td></tr>
 </table>
 
@@ -776,6 +839,7 @@ slider.addEventListener('change', () =&gt; console.log('committed:', slider.valu
     <tr><td><code>max</code></td><td><code>max</code></td><td><code>number</code></td><td><code>100</code></td><td>Maximum value.</td></tr>
     <tr><td><code>step</code></td><td><code>step</code></td><td><code>number</code></td><td><code>1</code></td><td>Step increment.</td></tr>
     <tr><td><code>ticks</code></td><td><code>ticks</code></td><td><code>number</code></td><td><code>0</code></td><td>Number of decorative tick marks (0 = none). Divides the track into <code>ticks + 1</code> equal segments.</td></tr>
+    <tr><td><code>name</code></td><td><code>name</code></td><td><code>string</code></td><td><code>""</code></td><td>Name the value is submitted under in a native <code>&lt;form&gt;</code>. See <a href="#form-element">FormElement</a>.</td></tr>
     <tr><td><code>disabled</code></td><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Reduces opacity and disables interaction.</td></tr>
     <tr><td><code>ariaLabel</code></td><td><code>aria-label</code></td><td><code>string | null</code></td><td><code>null</code></td><td>Accessible label passed through to the inner range input.</td></tr>
 </table>

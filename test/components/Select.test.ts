@@ -110,4 +110,97 @@ describe('ObUISelect', () => {
 
     expect(el.getAttribute('aria-expanded')).to.equal('false');
   });
+
+  it('exposes computed validity, without shadow DOM access', async () => {
+    const el = await fixture<ObUISelect>(
+      html`<obui-select required></obui-select>`,
+    );
+    el.options = OPTIONS;
+    await el.updateComplete;
+
+    expect(el.validity.valueMissing).to.be.true;
+    expect(el.checkValidity()).to.be.false;
+
+    el.value = 'a';
+    await el.updateComplete;
+
+    expect(el.validity.valueMissing).to.be.false;
+    expect(el.checkValidity()).to.be.true;
+  });
+
+  it('reflects validity synchronously, without awaiting updateComplete', async () => {
+    const el = await fixture<ObUISelect>(html`<obui-select></obui-select>`);
+    el.options = OPTIONS;
+
+    el.required = true;
+
+    expect(el.validity.valueMissing).to.be.true;
+    expect(el.checkValidity()).to.be.false;
+  });
+
+  it('matches a bare <input required disabled>: valid while disabled', async () => {
+    const el = await fixture<ObUISelect>(
+      html`<obui-select required disabled></obui-select>`,
+    );
+    el.options = OPTIONS;
+    await el.updateComplete;
+
+    expect(el.validity.valueMissing).to.be.false;
+    expect(el.willValidate).to.be.false;
+    expect(el.checkValidity()).to.be.true;
+    expect(el.validationMessage).to.equal('');
+
+    // ...and it is never painted invalid, even once touched.
+    el.dispatchEvent(new Event('blur'));
+    await el.updateComplete;
+
+    expect(el.hasAttribute('aria-invalid')).to.be.false;
+  });
+
+  it('does not paint an invalid indicator until the user interacts with it', async () => {
+    const el = await fixture<ObUISelect>(
+      html`<obui-select required></obui-select>`,
+    );
+    el.options = OPTIONS;
+    await el.updateComplete;
+
+    // Matches <obui-input>'s native :user-invalid convention: don't flag a
+    // required field before the user has had a chance to fill it in.
+    expect(el.hasAttribute('aria-invalid')).to.be.false;
+    const trigger = el.shadowRoot!.querySelector(
+      '.select-trigger',
+    ) as HTMLElement;
+    expect(trigger.style.borderBottomColor).to.equal('');
+
+    el.dispatchEvent(new Event('blur'));
+    await el.updateComplete;
+
+    expect(el.getAttribute('aria-invalid')).to.equal('true');
+    expect(trigger.style.borderBottomColor).to.equal('red');
+
+    el.value = 'a';
+    await el.updateComplete;
+
+    expect(el.hasAttribute('aria-invalid')).to.be.false;
+    expect(trigger.style.borderBottomColor).to.equal('');
+  });
+
+  it('reportValidity() also marks the control as touched', async () => {
+    const el = await fixture<ObUISelect>(
+      html`<obui-select required></obui-select>`,
+    );
+    el.options = OPTIONS;
+    await el.updateComplete;
+
+    const trigger = el.shadowRoot!.querySelector(
+      '.select-trigger',
+    ) as HTMLElement;
+    expect(trigger.style.borderBottomColor).to.equal('');
+
+    el.reportValidity();
+    await el.updateComplete;
+
+    expect(el.getAttribute('aria-invalid')).to.equal('true');
+    expect(trigger.style.borderBottomColor).to.equal('red');
+  });
 });
